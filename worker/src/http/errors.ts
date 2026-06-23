@@ -1,13 +1,13 @@
 import type { Context } from 'hono'
 import type { AppBindings } from './types'
 
-export type ErrorCode = 'bad_request' | 'validation_error' | 'internal_error'
+export type ErrorCode = 'bad_request' | 'validation_error' | 'unauthorized' | 'internal_error'
 
 export class HttpError extends Error {
   constructor(
     readonly code: ErrorCode,
     message: string,
-    readonly status: 400 | 500 = 400,
+    readonly status: 400 | 401 | 500 = 400,
   ) {
     super(message)
     this.name = 'HttpError'

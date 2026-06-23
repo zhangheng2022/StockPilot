@@ -128,6 +128,31 @@ describe('worker api', () => {
     ))).toBe(true)
   })
 
+  it('does not trust x-user-id in production', async () => {
+    const db = new FakeD1Database((call) => {
+      if (call.sql.includes('select') && call.sql.includes('from decisions')) {
+        return []
+      }
+      return null
+    })
+    const app = createApp()
+
+    const response = await app.request('/api/decisions', {
+      headers: {
+        'x-user-id': 'spoofed-user',
+        'cf-access-authenticated-user-email': 'alice@example.com',
+      },
+    }, createTestEnv(db, {
+      ENVIRONMENT: 'production',
+    } as Partial<Env>))
+
+    expect(response.status).toBe(200)
+    expect(db.calls.some((call) => (
+      call.sql.includes('from decisions') && call.bindings[0] === 'alice@example.com'
+    ))).toBe(true)
+    expect(db.calls.some((call) => call.bindings.includes('spoofed-user'))).toBe(false)
+  })
+
   it('returns structured validation errors with request id', async () => {
     const app = createApp()
     const response = await app.request('/api/decisions', {

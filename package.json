@@ -9,7 +9,7 @@
     "preview": "npm run build && wrangler dev",
     "postinstall": "nuxt prepare",
     "deploy": "npm run build && wrangler deploy",
-    "cf-typegen": "wrangler types worker-configuration.d.ts --env-file .env.example",
+    "cf-typegen": "wrangler types worker-configuration.d.ts --env-file .env.example --strict-vars false",
     "test": "vitest run",
     "typecheck:worker": "tsc -p worker/tsconfig.json --noEmit",
     "ncu": "npx npm-check-updates"

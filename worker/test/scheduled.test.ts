@@ -25,5 +25,8 @@ describe('scheduled discipline card scan', () => {
 
     expect(result.scanned).toBe(1)
     expect(db.calls.some((call) => call.sql.includes('from discipline_cards'))).toBe(true)
+    expect(db.calls.some((call) => (
+      call.sql.includes('insert into job_runs') && call.bindings.includes('discipline_card_scan')
+    ))).toBe(true)
   })
 })
