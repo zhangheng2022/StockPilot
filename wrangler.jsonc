@@ -5,10 +5,22 @@
   "observability": {
     "enabled": true
   },
-  "main": "./.output/server/index.mjs",
+  "main": "worker/src/index.ts",
   "assets": {
     "binding": "ASSETS",
     "directory": "./.output/public/"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "stock_pilot",
+      "database_id": "00000000-0000-0000-0000-000000000000"
+    }
+  ],
+  "triggers": {
+    "crons": [
+      "0 * * * *"
+    ]
   },
   "compatibility_flags": [
     "nodejs_compat"

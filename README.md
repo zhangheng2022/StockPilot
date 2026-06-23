@@ -1,75 +1,55 @@
-# Nuxt Minimal Starter
+# Stock Pilot
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Stock Pilot is a full-stack Cloudflare application:
+
+- Nuxt generates the frontend into `.output/public`.
+- Cloudflare Workers runs a Hono API from `worker/src/index.ts`.
+- Cloudflare D1 stores decisions, discipline cards, trigger events, and reviews.
+- Cloudflare Cron Triggers run scheduled discipline-card scans.
 
 ## Setup
 
-Make sure to install dependencies:
-
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+## Local Development
 
-Start the development server on `http://localhost:3000`:
+Run the Nuxt frontend during UI development:
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
-
-Build the application for production:
+Preview the integrated Worker after generating static assets:
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
 npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Database
+
+Create a D1 database and replace the placeholder `database_id` in `wrangler.jsonc`.
+
+```bash
+npx wrangler d1 create stock_pilot
+npx wrangler d1 migrations apply stock_pilot --local
+npx wrangler d1 migrations apply stock_pilot --remote
+```
+
+Initial schema lives in `worker/migrations/0001_initial.sql`.
+
+## Verification
+
+```bash
+npm test
+npm run typecheck:worker
+npm run build
+npx wrangler deploy --dry-run --outdir .wrangler/dry-run
+```
+
+## Deploy
+
+```bash
+npm run deploy
+```
