@@ -5,10 +5,26 @@
   "observability": {
     "enabled": true
   },
-  "main": "./.output/server/index.mjs",
+  "vars": {
+    "ENVIRONMENT": "development"
+  },
+  "main": "worker/src/index.ts",
   "assets": {
     "binding": "ASSETS",
     "directory": "./.output/public/"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "stock_pilot",
+      "database_id": "24e7c265-6391-4623-9d79-adad87aa1e12",
+      "migrations_dir": "worker/migrations"
+    }
+  ],
+  "triggers": {
+    "crons": [
+      "0 * * * *"
+    ]
   },
   "compatibility_flags": [
     "nodejs_compat"
