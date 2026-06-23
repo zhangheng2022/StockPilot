@@ -1,4 +1,1 @@
-export type WorkerEnv = {
-  DB: D1Database
-  ASSETS?: Fetcher
-}
+export type WorkerEnv = Env

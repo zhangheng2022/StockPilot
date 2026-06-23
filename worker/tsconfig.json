@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "composite": true,
     "lib": ["ES2022"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
@@ -8,7 +7,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2022",
-    "types": ["@cloudflare/workers-types", "vitest/globals"]
+    "types": ["vitest/globals"]
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"]
+  "include": ["../worker-configuration.d.ts", "src/**/*.ts", "test/**/*.ts"]
 }

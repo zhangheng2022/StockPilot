@@ -22,7 +22,7 @@ type DecisionRow = {
 export class DecisionRepository {
   constructor(private readonly env: WorkerEnv) {}
 
-  async list(userId = 'local-user') {
+  async list(userId: string) {
     const { results } = await this.env.DB.prepare(`
       select
         id,
@@ -48,7 +48,7 @@ export class DecisionRepository {
     return results.map(mapDecisionRow)
   }
 
-  async create(input: NewDecisionInput, userId = 'local-user') {
+  async create(input: NewDecisionInput, userId: string) {
     const now = new Date().toISOString()
     const decision: Decision = {
       id: crypto.randomUUID(),
@@ -122,8 +122,18 @@ function mapDecisionRow(row: DecisionRow): Decision {
     invalidationCondition: row.invalidation_condition,
     exitCondition: row.exit_condition,
     status: row.status,
-    qualityCheck: row.quality_check ? JSON.parse(row.quality_check) : null,
+    qualityCheck: parseJsonOrNull(row.quality_check),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+  }
+}
+
+function parseJsonOrNull(value: string | null) {
+  if (!value) return null
+
+  try {
+    return JSON.parse(value)
+  } catch {
+    return null
   }
 }

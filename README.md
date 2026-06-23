@@ -43,6 +43,7 @@ Initial schema lives in `worker/migrations/0001_initial.sql`.
 
 ```bash
 npm test
+npm run cf-typegen -- --check
 npm run typecheck:worker
 npm run build
 npx wrangler deploy --dry-run --outdir .wrangler/dry-run

@@ -9,7 +9,7 @@
     "preview": "npm run build && wrangler dev",
     "postinstall": "nuxt prepare",
     "deploy": "npm run build && wrangler deploy",
-    "cf-typegen": "wrangler types",
+    "cf-typegen": "wrangler types worker-configuration.d.ts --env-file .env.example",
     "test": "vitest run",
     "typecheck:worker": "tsc -p worker/tsconfig.json --noEmit"
   },
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260623.0",
+    "@types/node": "^26.0.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.16",
     "wrangler": "^4.103.0"

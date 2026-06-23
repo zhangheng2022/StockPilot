@@ -1,43 +1,36 @@
 import { Hono } from 'hono'
-import { isDecisionAction, type NewDecisionInput } from './domain/types'
-import type { WorkerEnv } from './env'
-import { DecisionRepository } from './repositories/decisions'
-
-type HonoBindings = {
-  Bindings: WorkerEnv
-}
+import { errorResponse, HttpError } from './http/errors'
+import type { AppBindings } from './http/types'
+import { requestContextMiddleware } from './middleware/request-context'
+import { createDecisionRoutes } from './routes/decisions'
 
 export function createApp() {
-  const app = new Hono<HonoBindings>()
+  const app = new Hono<AppBindings>()
+
+  app.use('*', requestContextMiddleware)
+
+  app.onError((error, c) => {
+    if (error instanceof HttpError) {
+      return errorResponse(c, error)
+    }
+
+    console.error(JSON.stringify({
+      level: 'error',
+      event: 'request_error',
+      requestId: c.get('requestId'),
+      path: c.req.path,
+      message: error.message,
+    }))
+
+    return errorResponse(c, new HttpError('internal_error', 'Internal server error', 500))
+  })
 
   app.get('/api/health', (c) => c.json({
     ok: true,
     service: 'stock-pilot-worker',
   }))
 
-  app.get('/api/decisions', async (c) => {
-    const decisions = await new DecisionRepository(c.env).list()
-    return c.json({
-      data: decisions,
-    })
-  })
-
-  app.post('/api/decisions', async (c) => {
-    const body = await c.req.json<Partial<NewDecisionInput>>()
-    const parsed = parseNewDecisionInput(body)
-
-    if ('error' in parsed) {
-      return c.json({
-        error: parsed.error,
-      }, 400)
-    }
-
-    const decision = await new DecisionRepository(c.env).create(parsed.input)
-
-    return c.json({
-      data: decision,
-    }, 201)
-  })
+  app.route('/api/decisions', createDecisionRoutes())
 
   app.get('/api/discipline-cards', (c) => c.json({
     data: [],
@@ -52,30 +45,4 @@ export function createApp() {
   }))
 
   return app
-}
-
-function parseNewDecisionInput(input: Partial<NewDecisionInput>): { input: NewDecisionInput } | { error: string } {
-  if (!input.stockCode) return { error: 'stockCode is required' }
-  if (!input.stockName) return { error: 'stockName is required' }
-  if (!isDecisionAction(input.action)) return { error: 'action is invalid' }
-  if (!input.rationale) return { error: 'rationale is required' }
-  if (!input.evidence) return { error: 'evidence is required' }
-  if (!input.risk) return { error: 'risk is required' }
-  if (typeof input.plannedPosition !== 'number') return { error: 'plannedPosition is required' }
-  if (!input.invalidationCondition) return { error: 'invalidationCondition is required' }
-  if (!input.exitCondition) return { error: 'exitCondition is required' }
-
-  return {
-    input: {
-      stockCode: input.stockCode,
-      stockName: input.stockName,
-      action: input.action,
-      rationale: input.rationale,
-      evidence: input.evidence,
-      risk: input.risk,
-      plannedPosition: input.plannedPosition,
-      invalidationCondition: input.invalidationCondition,
-      exitCondition: input.exitCondition,
-    },
-  }
 }

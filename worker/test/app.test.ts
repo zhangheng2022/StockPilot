@@ -1,14 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { createApp } from '../src/app'
-import { asD1Database, FakeD1Database } from './fake-d1'
+import { createTestEnv, FakeD1Database } from './fake-d1'
 
 describe('worker api', () => {
   it('returns health status', async () => {
     const app = createApp()
     const db = new FakeD1Database()
-    const response = await app.request('/api/health', {}, {
-      DB: asD1Database(db),
-    })
+    const response = await app.request('/api/health', {}, createTestEnv(db))
 
     expect(response.status).toBe(200)
     await expect(response.json()).resolves.toEqual({
@@ -59,16 +57,12 @@ describe('worker api', () => {
         invalidationCondition: '业绩连续低于预期',
         exitCondition: '跌破纪律条件',
       }),
-    }, {
-      DB: asD1Database(db),
-    })
+    }, createTestEnv(db))
 
     expect(createResponse.status).toBe(201)
     expect(db.calls.some((call) => call.sql.includes('insert into decisions'))).toBe(true)
 
-    const listResponse = await app.request('/api/decisions', {}, {
-      DB: asD1Database(db),
-    })
+    const listResponse = await app.request('/api/decisions', {}, createTestEnv(db))
 
     expect(listResponse.status).toBe(200)
     await expect(listResponse.json()).resolves.toEqual({
@@ -90,5 +84,105 @@ describe('worker api', () => {
         updatedAt: '2026-06-23T00:00:00.000Z',
       }],
     })
+  })
+
+  it('uses request user context when querying and creating decisions', async () => {
+    const db = new FakeD1Database((call) => {
+      if (call.sql.includes('select') && call.sql.includes('from decisions')) {
+        return []
+      }
+      return null
+    })
+    const app = createApp()
+
+    await app.request('/api/decisions', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-user-id': 'user-alice',
+      },
+      body: JSON.stringify({
+        stockCode: '00700',
+        stockName: 'Tencent',
+        action: 'hold',
+        rationale: 'waiting for confirmation',
+        evidence: 'volume expansion',
+        risk: 'false breakout',
+        plannedPosition: 0.05,
+        invalidationCondition: 'breaks support',
+        exitCondition: 'thesis invalidated',
+      }),
+    }, createTestEnv(db))
+
+    await app.request('/api/decisions', {
+      headers: {
+        'x-user-id': 'user-alice',
+      },
+    }, createTestEnv(db))
+
+    expect(db.calls.some((call) => (
+      call.sql.includes('insert into decisions') && call.bindings.includes('user-alice')
+    ))).toBe(true)
+    expect(db.calls.some((call) => (
+      call.sql.includes('from decisions') && call.bindings[0] === 'user-alice'
+    ))).toBe(true)
+  })
+
+  it('returns structured validation errors with request id', async () => {
+    const app = createApp()
+    const response = await app.request('/api/decisions', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-request-id': 'req-test-1',
+      },
+      body: JSON.stringify({ stockCode: '600519' }),
+    }, createTestEnv())
+
+    expect(response.status).toBe(400)
+    await expect(response.json()).resolves.toEqual({
+      error: {
+        code: 'validation_error',
+        message: 'stockName is required',
+        requestId: 'req-test-1',
+      },
+    })
+  })
+
+  it('does not fail the list endpoint when a JSON text column contains invalid data', async () => {
+    const rows = [{
+      id: 'decision-1',
+      user_id: 'local-user',
+      stock_code: '600519',
+      stock_name: 'Kweichow Moutai',
+      action: 'buy',
+      rationale: 'stable fundamentals',
+      evidence: 'quality earnings',
+      risk: 'valuation',
+      planned_position: 0.1,
+      invalidation_condition: 'earnings miss',
+      exit_condition: 'discipline break',
+      status: 'draft',
+      quality_check: '{invalid json',
+      created_at: '2026-06-23T00:00:00.000Z',
+      updated_at: '2026-06-23T00:00:00.000Z',
+    }]
+    const db = new FakeD1Database((call) => {
+      if (call.sql.includes('select') && call.sql.includes('from decisions')) {
+        return rows
+      }
+      return null
+    })
+    const app = createApp()
+
+    const response = await app.request('/api/decisions', {}, createTestEnv(db))
+
+    expect(response.status).toBe(200)
+    const body = await response.json<{
+      data: Array<{
+        qualityCheck: unknown | null
+      }>
+    }>()
+    expect(body.data[0].qualityCheck).toBe(null)
   })
 })

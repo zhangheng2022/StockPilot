@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { scanDisciplineCards } from '../src/jobs/scan-discipline-cards'
-import { asD1Database, FakeD1Database } from './fake-d1'
+import { createTestEnv, FakeD1Database } from './fake-d1'
 
 describe('scheduled discipline card scan', () => {
   it('loads cards that are due for review', async () => {
@@ -21,9 +21,7 @@ describe('scheduled discipline card scan', () => {
       return []
     })
 
-    const result = await scanDisciplineCards({
-      DB: asD1Database(db),
-    }, new Date('2026-06-23T01:00:00.000Z'))
+    const result = await scanDisciplineCards(createTestEnv(db), new Date('2026-06-23T01:00:00.000Z'))
 
     expect(result.scanned).toBe(1)
     expect(db.calls.some((call) => call.sql.includes('from discipline_cards'))).toBe(true)

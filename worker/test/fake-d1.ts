@@ -70,3 +70,15 @@ export class FakeD1Database {
 export function asD1Database(db: FakeD1Database): D1Database {
   return db as unknown as D1Database
 }
+
+export function createTestEnv(db = new FakeD1Database()): Env {
+  return {
+    DB: asD1Database(db),
+    ASSETS: {
+      fetch: async () => new Response('asset fallback'),
+      connect: () => {
+        throw new Error('ASSETS.connect is not implemented in tests')
+      },
+    },
+  }
+}
