@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import { HTTPException } from 'hono/http-exception'
 import { errorResponse, HttpError } from './http/errors'
 import type { AppBindings } from './http/types'
 import { requestContextMiddleware } from './middleware/request-context'
@@ -12,6 +13,10 @@ export function createApp() {
   app.onError((error, c) => {
     if (error instanceof HttpError) {
       return errorResponse(c, error)
+    }
+
+    if (error instanceof HTTPException && error.status === 400) {
+      return errorResponse(c, new HttpError('bad_request', 'Invalid JSON body'))
     }
 
     console.error(JSON.stringify({

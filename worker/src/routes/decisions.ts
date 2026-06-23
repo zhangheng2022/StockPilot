@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import { validator } from 'hono/validator'
 import { isDecisionAction, type NewDecisionInput } from '../domain/types'
 import { HttpError } from '../http/errors'
 import type { AppBindings } from '../http/types'
@@ -14,9 +15,8 @@ export function createDecisionRoutes() {
     })
   })
 
-  app.post('/', async (c) => {
-    const body = await readJsonBody(c.req)
-    const input = parseNewDecisionInput(body)
+  app.post('/', validateDecisionJson(), async (c) => {
+    const input = c.req.valid('json')
     const decision = await new DecisionRepository(c.env).create(input, c.get('userId'))
 
     return c.json({
@@ -27,15 +27,21 @@ export function createDecisionRoutes() {
   return app
 }
 
-async function readJsonBody(req: { json: <T>() => Promise<T> }) {
-  try {
-    return await req.json<Partial<NewDecisionInput>>()
-  } catch {
-    throw new HttpError('bad_request', 'Invalid JSON body')
-  }
+function validateDecisionJson() {
+  return validator('json', (value, c): NewDecisionInput => {
+    const contentType = c.req.header('content-type') || ''
+
+    if (!contentType.toLowerCase().includes('application/json')) {
+      throw new HttpError('bad_request', 'Content-Type must be application/json')
+    }
+
+    return validateNewDecisionInput(value)
+  })
 }
 
-function parseNewDecisionInput(input: Partial<NewDecisionInput>): NewDecisionInput {
+function validateNewDecisionInput(value: unknown): NewDecisionInput {
+  const input = isObject(value) ? value : {}
+
   if (!input.stockCode) throw new HttpError('validation_error', 'stockCode is required')
   if (!input.stockName) throw new HttpError('validation_error', 'stockName is required')
   if (!isDecisionAction(input.action)) throw new HttpError('validation_error', 'action is invalid')
@@ -57,4 +63,8 @@ function parseNewDecisionInput(input: Partial<NewDecisionInput>): NewDecisionInp
     invalidationCondition: input.invalidationCondition,
     exitCondition: input.exitCondition,
   }
+}
+
+function isObject(value: unknown): value is Partial<NewDecisionInput> {
+  return typeof value === 'object' && value !== null
 }

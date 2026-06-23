@@ -149,6 +149,57 @@ describe('worker api', () => {
     })
   })
 
+  it('requires JSON content type before validating decision input', async () => {
+    const app = createApp()
+    const response = await app.request('/api/decisions', {
+      method: 'POST',
+      headers: {
+        'x-request-id': 'req-test-content-type',
+      },
+      body: JSON.stringify({
+        stockCode: '600519',
+        stockName: 'Kweichow Moutai',
+        action: 'buy',
+        rationale: 'stable fundamentals',
+        evidence: 'quality earnings',
+        risk: 'valuation',
+        plannedPosition: 0.1,
+        invalidationCondition: 'earnings miss',
+        exitCondition: 'discipline break',
+      }),
+    }, createTestEnv())
+
+    expect(response.status).toBe(400)
+    await expect(response.json()).resolves.toEqual({
+      error: {
+        code: 'bad_request',
+        message: 'Content-Type must be application/json',
+        requestId: 'req-test-content-type',
+      },
+    })
+  })
+
+  it('returns structured bad request errors for malformed JSON', async () => {
+    const app = createApp()
+    const response = await app.request('/api/decisions', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-request-id': 'req-test-malformed-json',
+      },
+      body: '{bad json',
+    }, createTestEnv())
+
+    expect(response.status).toBe(400)
+    await expect(response.json()).resolves.toEqual({
+      error: {
+        code: 'bad_request',
+        message: 'Invalid JSON body',
+        requestId: 'req-test-malformed-json',
+      },
+    })
+  })
+
   it('does not fail the list endpoint when a JSON text column contains invalid data', async () => {
     const rows = [{
       id: 'decision-1',

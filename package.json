@@ -11,7 +11,8 @@
     "deploy": "npm run build && wrangler deploy",
     "cf-typegen": "wrangler types worker-configuration.d.ts --env-file .env.example",
     "test": "vitest run",
-    "typecheck:worker": "tsc -p worker/tsconfig.json --noEmit"
+    "typecheck:worker": "tsc -p worker/tsconfig.json --noEmit",
+    "ncu": "npx npm-check-updates"
   },
   "dependencies": {
     "hono": "^4.11.1",
