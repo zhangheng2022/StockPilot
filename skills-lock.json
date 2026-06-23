@@ -13,6 +13,12 @@
       "skillPath": "skills/nuxt/SKILL.md",
       "computedHash": "96dbdbfc06bf7045aeb9a463b972d5c0b5679d6dadf196d8ef6b98dc6defed2d"
     },
+    "tailwindcss": {
+      "source": "hairyf/skills",
+      "sourceType": "github",
+      "skillPath": "skills/tailwindcss/SKILL.md",
+      "computedHash": "676d95536c3c4a64215535ff09128d6e8d5163eb3fc204ed2cfde61e87b5d892"
+    },
     "workers-best-practices": {
       "source": "cloudflare/skills",
       "sourceType": "github",
