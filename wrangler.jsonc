@@ -1,12 +1,16 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "stock-pilot",
+  "workers_dev": false,
+  "preview_urls": false,
   "compatibility_date": "2026-06-23",
   "observability": {
     "enabled": true
   },
   "vars": {
-    "ENVIRONMENT": "development"
+    "ENVIRONMENT": "production",
+    "TEAM_DOMAIN": "https://zhangheng.cloudflareaccess.com",
+    "POLICY_AUD": "5a8ffe5954abcea53d9114962099b8ee7e9f3e59de3b687918b3d764b0fb615b"
   },
   "main": "worker/src/index.ts",
   "assets": {

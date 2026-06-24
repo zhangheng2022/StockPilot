@@ -21,6 +21,10 @@ Run the Nuxt frontend during UI development:
 npm run dev
 ```
 
+For integrated Worker preview, copy `.dev.vars.example` to `.dev.vars` first.
+This keeps local API requests on the development identity strategy while the
+checked-in Wrangler config remains production-safe.
+
 Preview the integrated Worker after generating static assets:
 
 ```bash
@@ -56,3 +60,8 @@ npm run deploy
 ```
 
 `npm run deploy` builds the frontend, applies pending remote D1 migrations, clears stale Wrangler redirect config, and then deploys the Worker. Use this script for releases so the Worker and production database schema move together.
+
+Production access is protected by Cloudflare Access on `sp.zhangheng.eu.org`.
+The Worker validates `Cf-Access-Jwt-Assertion` against `TEAM_DOMAIN` and
+`POLICY_AUD` from `wrangler.jsonc`; `workers.dev` and preview URLs are disabled
+so the Access-protected custom domain is the production entry point.

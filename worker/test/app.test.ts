@@ -194,7 +194,24 @@ describe('worker api', () => {
     ))).toBe(true)
   })
 
-  it('does not trust x-user-id in production', async () => {
+  it('falls back to local user in development when x-user-id is absent', async () => {
+    const db = new FakeD1Database((call) => {
+      if (call.sql.includes('select') && call.sql.includes('from decisions')) {
+        return []
+      }
+      return null
+    })
+    const app = createApp()
+
+    const response = await app.request('/api/decisions', {}, createTestEnv(db))
+
+    expect(response.status).toBe(200)
+    expect(db.calls.some((call) => (
+      call.sql.includes('from decisions') && call.bindings[0] === 'local-user'
+    ))).toBe(true)
+  })
+
+  it('requires a Cloudflare Access JWT in production', async () => {
     const db = new FakeD1Database((call) => {
       if (call.sql.includes('select') && call.sql.includes('from decisions')) {
         return []
@@ -206,17 +223,19 @@ describe('worker api', () => {
     const response = await app.request('/api/decisions', {
       headers: {
         'x-user-id': 'spoofed-user',
-        'cf-access-authenticated-user-email': 'alice@example.com',
       },
     }, createTestEnv(db, {
       ENVIRONMENT: 'production',
     } as Partial<Env>))
 
-    expect(response.status).toBe(200)
-    expect(db.calls.some((call) => (
-      call.sql.includes('from decisions') && call.bindings[0] === 'alice@example.com'
-    ))).toBe(true)
-    expect(db.calls.some((call) => call.bindings.includes('spoofed-user'))).toBe(false)
+    expect(response.status).toBe(401)
+    await expect(response.json()).resolves.toMatchObject({
+      error: {
+        code: 'unauthorized',
+        message: 'Cloudflare Access token is required',
+      },
+    })
+    expect(db.calls).toHaveLength(0)
   })
 
   it('returns structured validation errors with request id', async () => {
