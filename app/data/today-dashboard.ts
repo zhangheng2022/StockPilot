@@ -57,7 +57,7 @@ export const todayDashboard: TodayDashboard = {
 }
 
 export const bottomNavigationItems: BottomNavigationItem[] = [
-  { label: '今日', href: '/', active: true },
+  { label: '今日1', href: '/', active: true },
   { label: '决策', href: '/decisions', active: false },
   { label: '纪律卡', href: '/discipline-cards', active: false },
   { label: '复盘', href: '/reviews', active: false },

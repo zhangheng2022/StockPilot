@@ -12,6 +12,13 @@ export default {
       return app.fetch(request, env, ctx)
     }
 
+    if (env.ENVIRONMENT === 'development' && env.DEV_ASSET_ORIGIN) {
+      const origin = new URL(env.DEV_ASSET_ORIGIN)
+      origin.pathname = url.pathname
+      origin.search = url.search
+      return fetch(new Request(origin, request))
+    }
+
     if (env.ASSETS) {
       return env.ASSETS.fetch(request)
     }

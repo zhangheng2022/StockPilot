@@ -15,21 +15,30 @@ npm install
 
 ## Local Development
 
-Run the Nuxt frontend during UI development:
+Copy `.dev.vars.example` to `.dev.vars` first. This keeps local API requests on
+the development identity strategy while the checked-in Wrangler config remains
+production-safe.
+
+Run the integrated local app through Cloudflare Workers:
 
 ```bash
 npm run dev
 ```
 
-For integrated Worker preview, copy `.dev.vars.example` to `.dev.vars` first.
-This keeps local API requests on the development identity strategy while the
-checked-in Wrangler config remains production-safe.
+This applies local D1 migrations, starts Nuxt dev on `127.0.0.1:3000`, and
+starts `wrangler dev` on `127.0.0.1:8787`. Open the Wrangler URL. The Worker is
+still the browser entry point: `/api/*` is handled by Hono, while non-API
+requests are proxied to Nuxt dev so hot module replacement keeps working.
 
-Preview the integrated Worker after generating static assets:
+For UI-only work where you do not need Worker APIs, run:
 
 ```bash
-npm run preview
+npm run dev:ui
 ```
+
+`npm run preview` uses the same integrated Worker path as `npm run dev`.
+It builds `.output/public` first and is closer to the production static-assets
+runtime, so use `npm run dev` during active UI development.
 
 ## Database
 

@@ -83,6 +83,7 @@ export function createTestEnv(db = new FakeD1Database(), overrides: Partial<Env>
     ENVIRONMENT: 'development',
     POLICY_AUD: 'test-aud',
     TEAM_DOMAIN: 'https://test.cloudflareaccess.com',
+    DEV_ASSET_ORIGIN: '',
     ...overrides,
   }
 }

@@ -9,7 +9,7 @@ export function useTodayDashboard() {
   const dashboard = computed(() => {
     const body = response.data.value
 
-    if (body && 'data' in body) {
+    if (isTodayDashboardSuccess(body)) {
       return body.data
     }
 
@@ -22,4 +22,8 @@ export function useTodayDashboard() {
     error: response.error,
     refresh: response.refresh,
   }
+}
+
+function isTodayDashboardSuccess(value: unknown): value is { data: TodayDashboard } {
+  return typeof value === 'object' && value !== null && 'data' in value
 }
