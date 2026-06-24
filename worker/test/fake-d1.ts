@@ -1,3 +1,5 @@
+import type { WorkerEnv } from '../src/env'
+
 type D1Row = Record<string, unknown>
 
 type StatementCall = {
@@ -71,7 +73,7 @@ export function asD1Database(db: FakeD1Database): D1Database {
   return db as unknown as D1Database
 }
 
-export function createTestEnv(db = new FakeD1Database(), overrides: Partial<Env> = {}): Env {
+export function createTestEnv(db = new FakeD1Database(), overrides: Partial<WorkerEnv> = {}): WorkerEnv {
   return {
     DB: asD1Database(db),
     ASSETS: {

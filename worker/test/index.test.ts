@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import worker from '../src/index'
+import type { WorkerEnv } from '../src/env'
 import { createTestEnv } from './fake-d1'
 
 describe('Worker entrypoint', () => {
@@ -17,7 +18,7 @@ describe('Worker entrypoint', () => {
     )
     const env = createTestEnv(undefined, {
       DEV_ASSET_ORIGIN: 'http://127.0.0.1:3000',
-    } as Partial<Env>)
+    } as Partial<WorkerEnv>)
 
     const response = await worker.fetch(
       new Request('http://127.0.0.1:8787/_nuxt/app.js?hmr=1'),

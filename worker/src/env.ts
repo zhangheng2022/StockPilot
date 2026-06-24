@@ -1,1 +1,3 @@
-export type WorkerEnv = Env
+export type WorkerEnv = Env & {
+  DEV_ASSET_ORIGIN?: string
+}

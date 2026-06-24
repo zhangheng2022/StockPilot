@@ -10,8 +10,7 @@
   "vars": {
     "ENVIRONMENT": "production",
     "TEAM_DOMAIN": "https://zhangheng.cloudflareaccess.com",
-    "POLICY_AUD": "5a8ffe5954abcea53d9114962099b8ee7e9f3e59de3b687918b3d764b0fb615b",
-    "DEV_ASSET_ORIGIN": ""
+    "POLICY_AUD": "5a8ffe5954abcea53d9114962099b8ee7e9f3e59de3b687918b3d764b0fb615b"
   },
   "main": "worker/src/index.ts",
   "assets": {

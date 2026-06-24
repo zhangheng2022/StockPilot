@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { validator } from 'hono/validator'
 import { parseNewDecisionInput, type NewDecisionInput } from '../domain/types'
 import { HttpError } from '../http/errors'
+import { successResponse } from '../http/responses'
 import type { AppBindings } from '../http/types'
 import { createDecisionService } from '../services/decision-service'
 
@@ -10,18 +11,14 @@ export function createDecisionRoutes() {
 
   app.get('/', async (c) => {
     const decisions = await createDecisionService(c.env).listDecisions(c.get('userId'))
-    return c.json({
-      data: decisions,
-    })
+    return successResponse(c, decisions)
   })
 
   app.post('/', validateDecisionJson(), async (c) => {
     const input = c.req.valid('json')
     const decision = await createDecisionService(c.env).createDecision(input, c.get('userId'))
 
-    return c.json({
-      data: decision,
-    }, 201)
+    return successResponse(c, decision, 201)
   })
 
   return app

@@ -11,7 +11,7 @@
 
     <div class="rounded-lg border border-stock-line bg-stock-surface p-4">
       <p class="text-sm leading-6 text-stock-muted">
-        暂无可展示的决策记录。
+        功能待接入：决策列表 API 尚未完成。
       </p>
     </div>
   </section>

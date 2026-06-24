@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import type { AppBindings } from '../http/types'
+import { successResponse } from '../http/responses'
 import { createDashboardService } from '../services/dashboard-service'
 
 export function createDashboardRoutes() {
@@ -8,9 +9,7 @@ export function createDashboardRoutes() {
   app.get('/today', async (c) => {
     const dashboard = await createDashboardService(c.env).getTodayDashboard(c.get('userId'))
 
-    return c.json({
-      data: dashboard,
-    })
+    return successResponse(c, dashboard)
   })
 
   return app

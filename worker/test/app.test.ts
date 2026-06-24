@@ -11,7 +11,9 @@ describe('worker api', () => {
     expect(response.status).toBe(200)
     await expect(response.json()).resolves.toEqual({
       ok: true,
-      service: 'stock-pilot-worker',
+      data: {
+        service: 'stock-pilot-worker',
+      },
     })
   })
 
@@ -55,6 +57,7 @@ describe('worker api', () => {
 
     expect(response.status).toBe(200)
     await expect(response.json()).resolves.toMatchObject({
+      ok: true,
       data: {
         summary: {
           riskTriggerCount: 1,
@@ -76,6 +79,11 @@ describe('worker api', () => {
     expect(db.calls.some((call) => (
       call.sql.includes('from trigger_events') && call.bindings[0] === 'dashboard-user'
     ))).toBe(true)
+    const triggerQuery = db.calls.find((call) => call.sql.includes('from trigger_events'))
+    expect(triggerQuery?.sql).toContain('te.user_id = ?')
+    expect(triggerQuery?.sql).toContain('dc.user_id = ?')
+    expect(triggerQuery?.sql).toContain('d.user_id = ?')
+    expect(triggerQuery?.bindings).toEqual(['dashboard-user', 'dashboard-user', 'dashboard-user'])
     expect(db.calls.some((call) => (
       call.sql.includes('from discipline_cards') && call.bindings[0] === 'dashboard-user'
     ))).toBe(true)
@@ -132,6 +140,7 @@ describe('worker api', () => {
 
     expect(listResponse.status).toBe(200)
     await expect(listResponse.json()).resolves.toEqual({
+      ok: true,
       data: [{
         id: 'decision-1',
         userId: 'local-user',
@@ -230,6 +239,7 @@ describe('worker api', () => {
 
     expect(response.status).toBe(401)
     await expect(response.json()).resolves.toMatchObject({
+      ok: false,
       error: {
         code: 'unauthorized',
         message: 'Cloudflare Access token is required',
@@ -251,6 +261,7 @@ describe('worker api', () => {
 
     expect(response.status).toBe(400)
     await expect(response.json()).resolves.toEqual({
+      ok: false,
       error: {
         code: 'validation_error',
         message: 'stockName is required',
@@ -281,6 +292,7 @@ describe('worker api', () => {
 
     expect(response.status).toBe(400)
     await expect(response.json()).resolves.toEqual({
+      ok: false,
       error: {
         code: 'bad_request',
         message: 'Content-Type must be application/json',
@@ -302,6 +314,7 @@ describe('worker api', () => {
 
     expect(response.status).toBe(400)
     await expect(response.json()).resolves.toEqual({
+      ok: false,
       error: {
         code: 'bad_request',
         message: 'Invalid JSON body',
@@ -340,10 +353,32 @@ describe('worker api', () => {
 
     expect(response.status).toBe(200)
     const body = await response.json<{
+      ok: true
       data: Array<{
         qualityCheck: unknown | null
       }>
     }>()
+    expect(body.ok).toBe(true)
     expect(body.data[0].qualityCheck).toBe(null)
+  })
+
+  it('returns not implemented for placeholder APIs instead of successful empty data', async () => {
+    const app = createApp()
+
+    for (const path of ['/api/discipline-cards', '/api/trigger-events', '/api/reviews']) {
+      const response = await app.request(path, {
+        headers: {
+          'x-request-id': `req-${path.slice(5)}`,
+        },
+      }, createTestEnv())
+
+      expect(response.status).toBe(501)
+      await expect(response.json()).resolves.toMatchObject({
+        ok: false,
+        error: {
+          code: 'not_implemented',
+        },
+      })
+    }
   })
 })

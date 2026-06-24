@@ -64,10 +64,12 @@ export class DashboardRepository {
       join discipline_cards dc on dc.id = te.discipline_card_id
       join decisions d on d.id = dc.decision_id
       where te.user_id = ?
+        and dc.user_id = ?
+        and d.user_id = ?
         and te.status in ('pending', 'confirmed')
       order by te.created_at desc
       limit 20
-    `).bind(userId).all<DashboardTriggerRow>()
+    `).bind(userId, userId, userId).all<DashboardTriggerRow>()
 
     return results.map(mapTriggerRow)
   }

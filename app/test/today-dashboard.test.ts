@@ -1,8 +1,9 @@
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { bottomNavigationItems, todayDashboard } from '../data/today-dashboard'
+import { bottomNavigationItems } from '../data/navigation'
 import { useTodayDashboard } from '../composables/useTodayDashboard'
+import { todayDashboard } from './fixtures/today-dashboard'
 
 const pagesRoot = resolve(import.meta.dirname, '../pages')
 
@@ -31,7 +32,7 @@ describe('today dashboard view model', () => {
 
   it('loads the dashboard through the API fetch wrapper', () => {
     const useFetch = vi.fn(() => ({
-      data: { value: { data: todayDashboard } },
+      data: { value: { ok: true, data: todayDashboard } },
       pending: { value: false },
       error: { value: null },
       refresh: vi.fn(),
@@ -47,9 +48,45 @@ describe('today dashboard view model', () => {
       },
     })
     expect(result.dashboard.value).toEqual(todayDashboard)
+    expect(result.apiError.value).toBeNull()
   })
 
-  it('falls back without throwing when the dashboard response is not an API object', () => {
+  it('does not import demo dashboard data into the production fetch composable', () => {
+    const source = readFileSync(resolve(import.meta.dirname, '../composables/useTodayDashboard.ts'), 'utf8')
+
+    expect(source).not.toContain("from '../data/today-dashboard'")
+    expect(source).not.toContain('todayDashboard')
+  })
+
+  it('exposes API failures instead of silently treating them as dashboard data', () => {
+    const useFetch = vi.fn(() => ({
+      data: {
+        value: {
+          ok: false,
+          error: {
+            code: 'internal_error',
+            message: 'Internal server error',
+            requestId: 'req-dashboard-failed',
+          },
+        },
+      },
+      pending: { value: false },
+      error: { value: null },
+      refresh: vi.fn(),
+    }))
+    vi.stubGlobal('useFetch', useFetch)
+
+    const result = useTodayDashboard()
+
+    expect(result.dashboard.value).toBeNull()
+    expect(result.apiError.value).toEqual({
+      code: 'internal_error',
+      message: 'Internal server error',
+      requestId: 'req-dashboard-failed',
+    })
+  })
+
+  it('does not replace invalid API payloads with demo dashboard data', () => {
     const useFetch = vi.fn(() => ({
       data: { value: '<!DOCTYPE html><html></html>' },
       pending: { value: false },
@@ -60,7 +97,8 @@ describe('today dashboard view model', () => {
 
     const result = useTodayDashboard()
 
-    expect(result.dashboard.value).toEqual(todayDashboard)
+    expect(result.dashboard.value).toBeNull()
+    expect(result.apiError.value).toBeNull()
   })
 })
 

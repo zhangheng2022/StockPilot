@@ -19,7 +19,8 @@ Copy `.dev.vars.example` to `.dev.vars` first. This keeps local API requests on
 the development identity strategy while the checked-in Wrangler config remains
 production-safe.
 
-Run the integrated local app through Cloudflare Workers:
+Run the integrated local app through Cloudflare Workers during active
+development:
 
 ```bash
 npm run dev
@@ -36,9 +37,16 @@ For UI-only work where you do not need Worker APIs, run:
 npm run dev:ui
 ```
 
-`npm run preview` uses the same integrated Worker path as `npm run dev`.
-It builds `.output/public` first and is closer to the production static-assets
-runtime, so use `npm run dev` during active UI development.
+Preview the production-shaped local runtime when you want to check generated
+static assets:
+
+```bash
+npm run preview
+```
+
+This builds `.output/public`, applies local D1 migrations, and serves the
+generated app through `wrangler dev`. It does not provide Nuxt hot module
+replacement.
 
 ## Database
 

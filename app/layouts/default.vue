@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { bottomNavigationItems } from '../data/today-dashboard'
+import { bottomNavigationItems } from '../data/navigation'
 import AppBottomNav from '../components/layout/AppBottomNav.vue'
 import AppTopBar from '../components/layout/AppTopBar.vue'
 import FloatingActionButton from '../components/layout/FloatingActionButton.vue'

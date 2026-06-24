@@ -21,6 +21,8 @@ function runScript(scriptName) {
     const command = `npm run ${scriptName}`
     const child = spawnCommand(command)
 
+    child.on('error', reject)
+
     child.on('exit', (code) => {
       if (code === 0) {
         resolve()
@@ -36,6 +38,19 @@ function startScript(scriptName) {
   const child = spawnCommand(`npm run ${scriptName}`)
 
   children.add(child)
+
+  child.on('error', (error) => {
+    children.delete(child)
+
+    if (shuttingDown) {
+      return
+    }
+
+    shuttingDown = true
+    stopChildren()
+    console.error(error)
+    process.exit(1)
+  })
 
   child.on('exit', (code, signal) => {
     children.delete(child)

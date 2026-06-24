@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 import { errorResponse, HttpError } from './http/errors'
+import { successResponse } from './http/responses'
 import type { AppBindings } from './http/types'
 import { requestContextMiddleware } from './middleware/request-context'
 import { createDashboardRoutes } from './routes/dashboard'
@@ -31,25 +32,24 @@ export function createApp() {
     return errorResponse(c, new HttpError('internal_error', 'Internal server error', 500))
   })
 
-  app.get('/api/health', (c) => c.json({
-    ok: true,
+  app.get('/api/health', (c) => successResponse(c, {
     service: 'stock-pilot-worker',
   }))
 
   app.route('/api/decisions', createDecisionRoutes())
   app.route('/api/dashboard', createDashboardRoutes())
 
-  app.get('/api/discipline-cards', (c) => c.json({
-    data: [],
-  }))
+  app.get('/api/discipline-cards', () => {
+    throw new HttpError('not_implemented', 'Discipline cards API is not implemented yet', 501)
+  })
 
-  app.get('/api/trigger-events', (c) => c.json({
-    data: [],
-  }))
+  app.get('/api/trigger-events', () => {
+    throw new HttpError('not_implemented', 'Trigger events API is not implemented yet', 501)
+  })
 
-  app.get('/api/reviews', (c) => c.json({
-    data: [],
-  }))
+  app.get('/api/reviews', () => {
+    throw new HttpError('not_implemented', 'Reviews API is not implemented yet', 501)
+  })
 
   return app
 }
