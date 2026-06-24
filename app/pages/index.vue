@@ -7,18 +7,22 @@ const { dashboard, apiError, pending } = useTodayDashboard()
 </script>
 
 <template>
-  <div
+  <van-notice-bar
     v-if="apiError"
-    class="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-sm leading-6 text-amber-800"
-  >
-    数据接口暂时不可用：{{ apiError.message }}
-  </div>
+    wrapable
+    :scrollable="false"
+    color="#92400e"
+    background="#fffbeb"
+    :text="`数据接口暂时不可用：${apiError.message}`"
+  />
 
   <div
     v-if="pending"
-    class="rounded border border-stock-line bg-stock-surface px-3 py-2 text-sm leading-6 text-stock-muted"
+    class="rounded border border-stock-line bg-stock-surface px-3 py-4 text-sm leading-6 text-stock-muted"
   >
-    正在加载今日数据...
+    <van-loading size="20">
+      正在加载今日数据...
+    </van-loading>
   </div>
 
   <template v-if="dashboard">
@@ -49,15 +53,14 @@ const { dashboard, apiError, pending } = useTodayDashboard()
     </section>
   </template>
 
-  <section
+  <van-empty
     v-else-if="!pending"
-    class="rounded border border-stock-line bg-stock-surface p-4 text-sm leading-6 text-stock-muted"
+    image="error"
+    description="今日数据暂不可用"
+    class="rounded border border-stock-line bg-stock-surface"
   >
-    <div class="font-semibold text-stock-text">
-      今日数据暂不可用
-    </div>
-    <div>
+    <p class="px-4 text-center text-sm leading-6 text-stock-muted">
       请稍后刷新，或检查 Worker API 是否正常返回数据。
-    </div>
-  </section>
+    </p>
+  </van-empty>
 </template>

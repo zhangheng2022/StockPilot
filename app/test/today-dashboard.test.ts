@@ -24,6 +24,16 @@ describe('today dashboard view model', () => {
     expect(activeItems[0]?.href).toBe('/')
   })
 
+  it('provides a Vant icon for each bottom navigation item', () => {
+    expect(bottomNavigationItems.map(item => item.icon)).toEqual([
+      'home-o',
+      'records-o',
+      'todo-list-o',
+      'chart-trending-o',
+      'user-o',
+    ])
+  })
+
   it('keeps bottom navigation targets backed by Nuxt pages', () => {
     for (const item of bottomNavigationItems) {
       expect(hasPageForHref(item.href), `${item.href} should have a page component`).toBe(true)

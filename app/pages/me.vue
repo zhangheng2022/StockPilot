@@ -9,10 +9,10 @@
       </h2>
     </div>
 
-    <div class="rounded-lg border border-stock-line bg-stock-surface p-4">
-      <p class="text-sm leading-6 text-stock-muted">
-        功能待接入：账户资料 API 尚未完成。
-      </p>
-    </div>
+    <van-empty
+      class="rounded-lg border border-stock-line bg-stock-surface"
+      image="search"
+      description="功能待接入：账户资料 API 尚未完成。"
+    />
   </section>
 </template>

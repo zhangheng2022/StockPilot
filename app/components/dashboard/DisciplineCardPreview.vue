@@ -14,18 +14,24 @@ defineProps<{
         <span class="font-mono text-xs font-semibold text-stock-primary">{{ card.progress }}%</span>
       </div>
       <h4 class="font-semibold leading-6">{{ card.title }}</h4>
-      <div class="h-1.5 overflow-hidden rounded-full bg-slate-200">
-        <div class="h-full rounded-full bg-stock-primary" :style="{ width: `${card.progress}%` }"></div>
-      </div>
+      <van-progress
+        :percentage="card.progress"
+        color="#111827"
+        track-color="#e2e8f0"
+        :show-pivot="false"
+      />
     </div>
     <div class="flex items-end justify-between">
       <div>
         <p class="font-mono text-[11px] font-semibold text-stock-muted">{{ card.metricLabel }}</p>
         <p class="font-mono text-base font-semibold">{{ card.metricValue }}</p>
       </div>
-      <button class="grid size-9 place-items-center rounded bg-slate-100 font-semibold text-stock-primary" :aria-label="`查看${card.title}`">
-        >
-      </button>
+      <van-button
+        class="!size-9 !rounded !p-0"
+        icon="arrow"
+        size="small"
+        :aria-label="`查看${card.title}`"
+      />
     </div>
   </article>
 </template>

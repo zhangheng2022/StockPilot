@@ -15,6 +15,35 @@
   --color-stock-amber: #faad14;
 }
 
+html:root {
+  --van-primary-color: #00327d;
+  --van-success-color: #27ae60;
+  --van-danger-color: #ff4d4f;
+  --van-warning-color: #faad14;
+  --van-text-color: #191b22;
+  --van-text-color-2: #687083;
+  --van-text-color-3: #8c94a6;
+  --van-border-color: #d9deea;
+  --van-active-color: #eef4ff;
+  --van-background: #f5f7fa;
+  --van-background-2: #ffffff;
+  --van-radius-sm: 4px;
+  --van-radius-md: 8px;
+  --van-radius-lg: 8px;
+  --van-button-primary-background: #00327d;
+  --van-button-primary-border-color: #00327d;
+  --van-button-border-radius: 8px;
+  --van-nav-bar-background: #f5f7fa;
+  --van-nav-bar-title-text-color: #00327d;
+  --van-tabbar-background: #ffffff;
+  --van-tabbar-item-active-color: #00327d;
+  --van-tabbar-item-text-color: #687083;
+  --van-floating-bubble-size: 56px;
+  --van-floating-bubble-icon-size: 28px;
+  --van-floating-bubble-background: #00327d;
+  --van-floating-bubble-z-index: 40;
+}
+
 html {
   background: #f5f7fa;
 }
