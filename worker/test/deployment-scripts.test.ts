@@ -35,6 +35,16 @@ describe('deployment scripts', () => {
     expect(scripts['dev:ui']).toBe('nuxt dev')
   })
 
+  it('runs the Worker before static assets so development can proxy Nuxt and production keeps one auth boundary', () => {
+    const wranglerConfig = readWranglerConfig()
+
+    expect(wranglerConfig.assets).toMatchObject({
+      binding: 'ASSETS',
+      directory: './.output/public/',
+      run_worker_first: true,
+    })
+  })
+
   it('keeps Nuxt hot module replacement in the Worker-backed development environment', () => {
     const scripts = readPackageScripts()
 
@@ -43,7 +53,7 @@ describe('deployment scripts', () => {
     expect(scripts.dev).not.toContain('nuxt generate')
     expect(scripts['dev:nuxt']).toBe('nuxt dev --host 127.0.0.1 --port 3000')
     expect(scripts['dev:worker']).toBe(
-      'wrangler dev --config wrangler.jsonc --port 8787 --var DEV_ASSET_ORIGIN:http://127.0.0.1:3000',
+      'wrangler dev --config wrangler.jsonc --port 8787 --var ENVIRONMENT:development --var DEV_ASSET_ORIGIN:http://127.0.0.1:3000',
     )
   })
 
@@ -70,4 +80,20 @@ function readPackageScripts(): Record<string, string> {
   }
 
   return packageJson.scripts
+}
+
+function readWranglerConfig(): {
+  assets?: {
+    binding?: string
+    directory?: string
+    run_worker_first?: boolean
+  }
+} {
+  return JSON.parse(readFileSync(resolve(root, 'wrangler.jsonc'), 'utf8')) as {
+    assets?: {
+      binding?: string
+      directory?: string
+      run_worker_first?: boolean
+    }
+  }
 }

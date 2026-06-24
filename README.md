@@ -82,3 +82,8 @@ Production access is protected by Cloudflare Access on `sp.zhangheng.eu.org`.
 The Worker validates `Cf-Access-Jwt-Assertion` against `TEAM_DOMAIN` and
 `POLICY_AUD` from `wrangler.jsonc`; `workers.dev` and preview URLs are disabled
 so the Access-protected custom domain is the production entry point.
+
+Cloudflare Access also has a separate bypass application for
+`sp.zhangheng.eu.org/_nuxt/*`. Nuxt JS/CSS chunks are public static assets and
+must not be replaced by the Access login page; the root app and `/api/*` remain
+protected by Access.

@@ -15,7 +15,8 @@
   "main": "worker/src/index.ts",
   "assets": {
     "binding": "ASSETS",
-    "directory": "./.output/public/"
+    "directory": "./.output/public/",
+    "run_worker_first": true
   },
   "d1_databases": [
     {
