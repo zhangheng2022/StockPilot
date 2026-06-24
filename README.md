@@ -33,8 +33,8 @@ Create a D1 database and replace the placeholder `database_id` in `wrangler.json
 
 ```bash
 npx wrangler d1 create stock_pilot
-npx wrangler d1 migrations apply stock_pilot --local
-npx wrangler d1 migrations apply stock_pilot --remote
+npm run db:migrate:local
+npm run db:migrate:remote
 ```
 
 Initial schema lives in `worker/migrations/0001_initial.sql`.
@@ -54,3 +54,5 @@ npx wrangler deploy --dry-run --outdir .wrangler/dry-run
 ```bash
 npm run deploy
 ```
+
+`npm run deploy` builds the frontend, applies pending remote D1 migrations, clears stale Wrangler redirect config, and then deploys the Worker. Use this script for releases so the Worker and production database schema move together.
