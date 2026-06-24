@@ -14,6 +14,16 @@ export function createDecisionRoutes() {
     return successResponse(c, decisions)
   })
 
+  app.get('/:id', async (c) => {
+    const decision = await createDecisionService(c.env).getDecision(c.req.param('id'), c.get('userId'))
+
+    if (!decision) {
+      throw new HttpError('not_found', 'Decision not found', 404)
+    }
+
+    return successResponse(c, decision)
+  })
+
   app.post('/', validateDecisionJson(), async (c) => {
     const input = c.req.valid('json')
     const decision = await createDecisionService(c.env).createDecision(input, c.get('userId'))

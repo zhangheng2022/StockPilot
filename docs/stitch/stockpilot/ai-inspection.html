@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StockPilot AI - 决策质检结果</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&amp;family=Jetbrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+        .ai-glow {
+            box-shadow: 0 0 15px rgba(0, 50, 125, 0.08);
+            border: 1px solid rgba(0, 50, 125, 0.1);
+        }
+        .scroll-hide::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<!-- Use Tailwind Config from Brand Anchors -->
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"surface-variant": "#e0e3e5", "on-background": "#191c1e", background: "#f7f9fb", "risk-low": "#52C41A", "error-container": "#ffdad6", "on-error": "#ffffff", primary: "#000000", "on-secondary-container": "#54647a", "surface-container-lowest": "#ffffff", "surface-container-highest": "#e0e3e5", "on-surface-variant": "#4c4546", "on-secondary-fixed": "#0b1c30", "on-error-container": "#93000a", error: "#ba1a1a", secondary: "#505f76", "surface-container-low": "#f2f4f6", "on-primary-fixed-variant": "#474747", outline: "#7e7576", "on-secondary-fixed-variant": "#38485d", "on-primary-fixed": "#1b1b1b", "primary-fixed": "#e2e2e2", "on-tertiary-container": "#ef4444", "secondary-fixed-dim": "#b7c8e1", "secondary-container": "#d0e1fb", "on-tertiary-fixed-variant": "#930013", "risk-high": "#FF4D4F", tertiary: "#000000", "on-primary-container": "#848484", "tertiary-fixed": "#ffdad7", "surface-bright": "#f7f9fb", "surface-container-high": "#e6e8ea", "surface-dim": "#d8dadc", "surface-tint": "#5e5e5e", surface: "#f7f9fb", "on-tertiary": "#ffffff", "a-share-red": "#FF4D4F", "secondary-fixed": "#d3e4fe", "bg-neutral": "#F5F7FA", "tertiary-container": "#410004", "tertiary-fixed-dim": "#ffb3ad", "risk-mid": "#FAAD14", "on-primary": "#ffffff", "primary-fixed-dim": "#c6c6c6", "outline-variant": "#cfc4c5", "inverse-primary": "#c6c6c6", "surface-container": "#eceef0", "inverse-on-surface": "#eff1f3", "on-surface": "#191c1e", "inverse-surface": "#2d3133", "on-secondary": "#ffffff", "on-tertiary-fixed": "#410004", "primary-container": "#1b1b1b", "a-share-green": "#27AE60"}, borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"}, spacing: {base: "4px", "stack-md": "16px", "margin-mobile": "16px", "margin-desktop": "32px", "stack-lg": "24px", "stack-sm": "8px", gutter: "16px"}, fontFamily: {"headline-sm": ["Hanken Grotesk"], "headline-lg-mobile": ["Hanken Grotesk"], "body-lg": ["Hanken Grotesk"], "headline-md": ["Hanken Grotesk"], "data-display": ["JetBrains Mono"], "body-md": ["Hanken Grotesk"], "label-caps": ["JetBrains Mono"], "headline-lg": ["Hanken Grotesk"], headline: ["Geist"], display: ["Geist"], body: ["Geist"], label: ["Jetbrains Mono"]}, fontSize: {"headline-sm": ["18px", {lineHeight: "24px", fontWeight: "600"}], "headline-lg-mobile": ["24px", {lineHeight: "32px", fontWeight: "700"}], "body-lg": ["16px", {lineHeight: "24px", fontWeight: "400"}], "headline-md": ["22px", {lineHeight: "28px", fontWeight: "600"}], "data-display": ["14px", {lineHeight: "20px", fontWeight: "500"}], "body-md": ["14px", {lineHeight: "20px", fontWeight: "400"}], "label-caps": ["12px", {lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "600"}], "headline-lg": ["28px", {lineHeight: "36px", fontWeight: "700"}]}}}};</script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen font-body-md text-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="bg-background dark:bg-background docked full-width top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile h-16 max-w-7xl mx-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="monitoring">monitoring</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-primary-fixed">StockPilot AI</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-container-low transition-colors rounded-full" data-icon="close">close</button>
+</div>
+</div>
+</header>
+<main class="max-w-3xl mx-auto px-margin-mobile pt-4 pb-32">
+<!-- Overall Suggestion Section -->
+<section class="mb-stack-lg animate-in fade-in slide-in-from-bottom-4 duration-700">
+<div class="ai-glow bg-primary/5 rounded-xl p-5 border-l-4 border-primary">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label-caps text-label-caps text-primary tracking-widest uppercase">AI 质检建议</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-background mb-1">建议小仓位试错</h2>
+<p class="text-on-surface-variant font-body-md">当前决策逻辑在“个股强度”上有支撑，但“大盘环境”和“仓位配比”存在显著失衡风险。不建议按原计划满仓杀入。</p>
+</div>
+</section>
+<!-- Core Metrics Area -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-stack-lg">
+<!-- Metric 1: Soundness -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-surface-variant">
+<div class="flex flex-col items-center text-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2">依据充分度</span>
+<div class="w-16 h-16 rounded-full border-4 border-primary/20 flex items-center justify-center mb-2">
+<span class="font-data-display text-headline-sm text-primary">高</span>
+</div>
+<span class="text-[10px] text-primary/60 font-medium">逻辑覆盖率 85%</span>
+</div>
+</div>
+<!-- Metric 2: Risk Level -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-surface-variant">
+<div class="flex flex-col items-center text-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2">风险等级</span>
+<div class="w-16 h-16 rounded-full border-4 border-risk-mid/20 flex items-center justify-center mb-2">
+<span class="font-data-display text-headline-sm text-risk-mid">中</span>
+</div>
+<span class="text-[10px] text-risk-mid/60 font-medium">波动率分位 62%</span>
+</div>
+</div>
+<!-- Metric 3: Position -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-surface-variant relative overflow-hidden">
+<div class="flex flex-col items-center text-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2">仓位合理性</span>
+<div class="w-16 h-16 rounded-full border-4 border-risk-high/20 flex items-center justify-center mb-2">
+<span class="font-data-display text-headline-sm text-risk-high">偏高</span>
+</div>
+<span class="text-[10px] text-risk-high/60 font-medium">超出模型建议 30%</span>
+</div>
+<!-- Warning Flare -->
+<div class="absolute top-0 right-0 p-1">
+<span class="material-symbols-outlined text-risk-high text-xs" data-icon="error_outline">error_outline</span>
+</div>
+</div>
+</div>
+<!-- Vulnerabilities List (Logic Blind Spots) -->
+<section class="mb-stack-lg">
+<div class="flex items-center gap-2 mb-stack-sm px-1">
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="visibility_off">visibility_off</span>
+<h3 class="font-headline-sm text-headline-sm">关键逻辑漏洞</h3>
+</div>
+<div class="space-y-stack-sm">
+<div class="bg-white border border-error-container/50 rounded-xl p-4 flex gap-3">
+<div class="mt-1">
+<span class="material-symbols-outlined text-risk-high" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div>
+<h4 class="font-bold text-on-background mb-1">忽略行业板块轮动风险</h4>
+<p class="text-on-surface-variant text-sm">当前标的所属板块（半导体）已连续上涨5个交易日，处于短线超买区，回调概率极高。</p>
+</div>
+</div>
+<div class="bg-white border border-surface-variant rounded-xl p-4 flex gap-3">
+<div class="mt-1">
+<span class="material-symbols-outlined text-risk-mid" data-icon="info" style="font-variation-settings: 'FILL' 1;">info</span>
+</div>
+<div>
+<h4 class="font-bold text-on-background mb-1">缺乏底部换手确认</h4>
+<p class="text-on-surface-variant text-sm">虽有价格企稳迹象，但近三日成交量萎缩，可能存在二次探底的流动性陷阱。</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Mandatory Monitoring Conditions -->
+<section class="mb-stack-lg">
+<div class="flex items-center gap-2 mb-stack-sm px-1">
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="track_changes">track_changes</span>
+<h3 class="font-headline-sm text-headline-sm">必须监控的触发点</h3>
+</div>
+<div class="bg-surface-container-low rounded-xl p-5 border border-dashed border-outline-variant">
+<ul class="space-y-4">
+<li class="flex items-start gap-3">
+<div class="bg-primary text-white rounded w-5 h-5 flex items-center justify-center flex-shrink-0 font-data-display text-[10px]">01</div>
+<div>
+<span class="font-medium text-on-background block">股价跌破 ￥24.80 (20日均线)</span>
+<span class="text-on-surface-variant text-xs">触发逻辑：防守位破位，原有上升趋势宣告结束。</span>
+</div>
+</li>
+<li class="flex items-start gap-3 border-t border-surface-variant pt-4">
+<div class="bg-primary text-white rounded w-5 h-5 flex items-center justify-center flex-shrink-0 font-data-display text-[10px]">02</div>
+<div>
+<span class="font-medium text-on-background block">单日换手率超过 12% 且收阴</span>
+<span class="text-on-surface-variant text-xs">触发逻辑：高位放量滞涨，主力出货嫌疑明显。</span>
+</div>
+</li>
+<li class="flex items-start gap-3 border-t border-surface-variant pt-4">
+<div class="bg-primary text-white rounded w-5 h-5 flex items-center justify-center flex-shrink-0 font-data-display text-[10px]">03</div>
+<div>
+<span class="font-medium text-on-background block">板块指数跌幅超过 2.5%</span>
+<span class="text-on-surface-variant text-xs">触发逻辑：共振性下跌，个股难以维持独立行情。</span>
+</div>
+</li>
+</ul>
+</div>
+</section>
+<!-- AI Blueprint Visualization (Decorative/Informational) -->
+<div class="relative w-full h-32 rounded-xl overflow-hidden mb-stack-lg bg-primary-container/20 border border-primary/10">
+<div class="absolute inset-0 flex items-center justify-center flex-col p-4 text-center">
+<span class="material-symbols-outlined text-primary opacity-50 mb-1" data-icon="psychology">psychology</span>
+<span class="text-[10px] font-label-caps text-primary/70">AI LOGIC MAPPING ENGINE v2.4</span>
+</div>
+</div>
+</main>
+<!-- Bottom Actions & Navigation Shell -->
+<footer class="fixed bottom-0 left-0 w-full z-50 bg-surface dark:bg-surface-container shadow-[0_-2px_12px_rgba(0,0,0,0.08)]">
+<!-- Action Bar (High Context) -->
+<div class="flex gap-stack-md px-margin-mobile py-4 bg-white/80 backdrop-blur-md">
+<button class="flex-1 border border-primary text-primary h-12 rounded-xl font-bold active:scale-95 transition-all hover:bg-surface-container-low">
+                修改决策
+            </button>
+<button class="flex-1 bg-primary text-on-primary h-12 rounded-xl font-bold shadow-lg active:scale-95 transition-all hover:bg-primary-container">
+                保存为纪律卡
+            </button>
+</div>
+<!-- Global Bottom NavBar -->
+<div class="flex justify-around items-center px-2 py-2 pb-safe border-t border-surface-variant/30">
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="today">today</span>
+<span class="font-label-caps text-label-caps">今日</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-4 py-1 active:scale-90 transition-transform duration-150 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="add_chart" style="font-variation-settings: 'FILL' 1;">add_chart</span>
+<span class="font-label-caps text-label-caps">决策</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="style">style</span>
+<span class="font-label-caps text-label-caps">纪律卡</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-caps text-label-caps">复盘</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline p-2 hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-caps text-label-caps">我的</span>
+</div>
+</div>
+</footer>
+<!-- Interactive Micro-interactions -->
+<script>
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.add('opacity-80', 'scale-95');
+                setTimeout(() => {
+                    this.classList.remove('opacity-80', 'scale-95');
+                }, 100);
+            });
+        });
+
+        // Simple observer for fade-in animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100');
+                    entry.target.classList.remove('opacity-0');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('section').forEach(section => {
+            section.classList.add('transition-all', 'duration-500', 'opacity-100');
+            observer.observe(section);
+        });
+    </script>
+</body></html>

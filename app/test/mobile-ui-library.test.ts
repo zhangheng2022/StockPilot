@@ -58,6 +58,7 @@ describe('mobile UI library integration', () => {
     expect(floatingAction).toContain('icon="plus"')
     expect(floatingAction).toContain('axis="lock"')
     expect(floatingAction).toContain(':gap="{ x: 20, y: 76 }"')
+    expect(floatingAction).toContain("router.push('/decisions/new')")
     expect(floatingAction).not.toContain('--van-floating-bubble')
     expect(homePage).toContain('<van-notice-bar')
     expect(homePage).toContain('<van-loading')
@@ -77,11 +78,29 @@ describe('mobile UI library integration', () => {
   })
 
   it('uses Vant empty states for unfinished placeholder pages', () => {
-    for (const file of ['decisions.vue', 'discipline-cards.vue', 'reviews.vue', 'me.vue']) {
+    for (const file of ['reviews.vue', 'me.vue']) {
       const source = readFileSync(resolve(root, 'app/pages', file), 'utf8')
 
       expect(source).toContain('<van-empty')
       expect(source).toContain('功能待接入')
     }
+  })
+
+  it('uses Vant mobile controls for decision and discipline card workflows', () => {
+    const decisions = readFileSync(resolve(root, 'app/pages/decisions.vue'), 'utf8')
+    const newDecision = readFileSync(resolve(root, 'app/pages/decisions/new.vue'), 'utf8')
+    const quality = readFileSync(resolve(root, 'app/pages/decisions/[id]/quality.vue'), 'utf8')
+    const disciplineCards = readFileSync(resolve(root, 'app/pages/discipline-cards.vue'), 'utf8')
+    const disciplineDetail = readFileSync(resolve(root, 'app/pages/discipline-cards/[id].vue'), 'utf8')
+
+    expect(decisions).toContain('<van-loading')
+    expect(decisions).toContain('<van-empty')
+    expect(newDecision).toContain('<van-form')
+    expect(newDecision).toContain('<van-field')
+    expect(newDecision).toContain('<van-radio-group')
+    expect(newDecision).toContain('<van-slider')
+    expect(quality).toContain('<van-cell-group')
+    expect(disciplineCards).toContain('<van-tag')
+    expect(disciplineDetail).toContain('<van-cell-group')
   })
 })

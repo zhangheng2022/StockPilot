@@ -6,6 +6,7 @@ import type { AppBindings } from './http/types'
 import { requestContextMiddleware } from './middleware/request-context'
 import { createDashboardRoutes } from './routes/dashboard'
 import { createDecisionRoutes } from './routes/decisions'
+import { createDisciplineCardRoutes } from './routes/discipline-cards'
 
 export function createApp() {
   const app = new Hono<AppBindings>()
@@ -38,10 +39,7 @@ export function createApp() {
 
   app.route('/api/decisions', createDecisionRoutes())
   app.route('/api/dashboard', createDashboardRoutes())
-
-  app.get('/api/discipline-cards', () => {
-    throw new HttpError('not_implemented', 'Discipline cards API is not implemented yet', 501)
-  })
+  app.route('/api/discipline-cards', createDisciplineCardRoutes())
 
   app.get('/api/trigger-events', () => {
     throw new HttpError('not_implemented', 'Trigger events API is not implemented yet', 501)

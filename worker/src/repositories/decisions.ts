@@ -1,5 +1,10 @@
-import type { Decision, DecisionStatus, NewDecisionInput } from '../domain/types'
+import type { Decision, DecisionQualityCheck, DecisionStatus, NewDecisionInput } from '../domain/types'
 import type { WorkerEnv } from '../env'
+
+type CreateDecisionOptions = {
+  status?: DecisionStatus
+  qualityCheck?: DecisionQualityCheck | null
+}
 
 type DecisionRow = {
   id: string
@@ -48,7 +53,34 @@ export class DecisionRepository {
     return results.map(mapDecisionRow)
   }
 
-  async create(input: NewDecisionInput, userId: string) {
+  async get(id: string, userId: string) {
+    const row = await this.env.DB.prepare(`
+      select
+        id,
+        user_id,
+        stock_code,
+        stock_name,
+        action,
+        rationale,
+        evidence,
+        risk,
+        planned_position,
+        invalidation_condition,
+        exit_condition,
+        status,
+        quality_check,
+        created_at,
+        updated_at
+      from decisions
+      where id = ?
+        and user_id = ?
+      limit 1
+    `).bind(id, userId).first<DecisionRow>()
+
+    return row ? mapDecisionRow(row) : null
+  }
+
+  async create(input: NewDecisionInput, userId: string, options: CreateDecisionOptions = {}) {
     const now = new Date().toISOString()
     const decision: Decision = {
       id: crypto.randomUUID(),
@@ -62,8 +94,8 @@ export class DecisionRepository {
       plannedPosition: input.plannedPosition,
       invalidationCondition: input.invalidationCondition,
       exitCondition: input.exitCondition,
-      status: 'draft',
-      qualityCheck: null,
+      status: options.status ?? 'draft',
+      qualityCheck: options.qualityCheck ?? null,
       createdAt: now,
       updatedAt: now,
     }
@@ -99,7 +131,7 @@ export class DecisionRepository {
       decision.invalidationCondition,
       decision.exitCondition,
       decision.status,
-      decision.qualityCheck,
+      decision.qualityCheck ? JSON.stringify(decision.qualityCheck) : null,
       decision.createdAt,
       decision.updatedAt,
     ).run()

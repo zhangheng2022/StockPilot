@@ -46,7 +46,43 @@ describe('decision service', () => {
     expect(db.calls.some((call) => (
       call.sql.includes('insert into decisions') && call.bindings.includes('user-service')
     ))).toBe(true)
+    expect(db.calls.some((call) => (
+      call.sql.includes('insert into discipline_cards') && call.bindings.includes('user-service')
+    ))).toBe(true)
     expect(decisions).toHaveLength(1)
     expect(decisions[0]?.userId).toBe('user-service')
+  })
+
+  it('returns the created decision with a generated quality check and discipline card', async () => {
+    const db = new FakeD1Database()
+    const service = createDecisionService(createTestEnv(db))
+
+    const result = await service.createDecision({
+      stockCode: '00700',
+      stockName: 'Tencent',
+      action: 'hold',
+      rationale: 'wait for confirmation',
+      evidence: 'volume expansion',
+      risk: 'false breakout',
+      plannedPosition: 0.25,
+      invalidationCondition: 'breaks support',
+      exitCondition: 'thesis invalidated',
+    }, 'user-service')
+
+    expect(result.decision).toMatchObject({
+      userId: 'user-service',
+      stockCode: '00700',
+      status: 'card_created',
+      qualityCheck: {
+        verdict: 'pass',
+      },
+    })
+    expect(result.disciplineCard).toMatchObject({
+      userId: 'user-service',
+      decisionId: result.decision.id,
+      coreThesis: 'Tencent hold: wait for confirmation',
+      status: 'planned_holding',
+      reviewFrequency: 'daily',
+    })
   })
 })

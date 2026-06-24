@@ -11,11 +11,17 @@ export {
 export type {
   Decision,
   DecisionAction,
+  DecisionQualityCheck,
   DecisionStatus,
+  CreatedDecision,
   DisciplineCard,
+  DisciplineCardDetail,
+  DisciplineCardListItem,
   DisciplineCardStatus,
   NewDecisionInput,
+  ReviewHistoryItem,
   ReviewStatus,
+  TriggerEventHistoryItem,
   TriggerEventStatus,
 } from './decisions'
 export type {

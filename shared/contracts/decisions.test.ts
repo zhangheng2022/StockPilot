@@ -39,4 +39,61 @@ describe('decision contract', () => {
       message: 'stockName is required',
     })
   })
+
+  it('normalizes text input and validates planned position boundaries', () => {
+    expect(parseNewDecisionInput({
+      stockCode: ' 00700 ',
+      stockName: ' Tencent ',
+      action: 'hold',
+      rationale: ' wait for confirmation ',
+      evidence: ' volume expansion ',
+      risk: ' false breakout ',
+      plannedPosition: 0.25,
+      invalidationCondition: ' breaks support ',
+      exitCondition: ' thesis invalidated ',
+    })).toMatchObject({
+      ok: true,
+      data: {
+        stockCode: '00700',
+        stockName: 'Tencent',
+        rationale: 'wait for confirmation',
+        evidence: 'volume expansion',
+        risk: 'false breakout',
+        invalidationCondition: 'breaks support',
+        exitCondition: 'thesis invalidated',
+      },
+    })
+
+    expect(parseNewDecisionInput({
+      stockCode: '00700',
+      stockName: 'Tencent',
+      action: 'hold',
+      rationale: 'wait for confirmation',
+      evidence: 'volume expansion',
+      risk: 'false breakout',
+      plannedPosition: Number.NaN,
+      invalidationCondition: 'breaks support',
+      exitCondition: 'thesis invalidated',
+    })).toEqual({
+      ok: false,
+      code: 'validation_error',
+      message: 'plannedPosition must be a finite number',
+    })
+
+    expect(parseNewDecisionInput({
+      stockCode: '00700',
+      stockName: 'Tencent',
+      action: 'hold',
+      rationale: 'wait for confirmation',
+      evidence: 'volume expansion',
+      risk: 'false breakout',
+      plannedPosition: 1.2,
+      invalidationCondition: 'breaks support',
+      exitCondition: 'thesis invalidated',
+    })).toEqual({
+      ok: false,
+      code: 'validation_error',
+      message: 'plannedPosition must be between 0 and 1',
+    })
+  })
 })

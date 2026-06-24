@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StockPilot AI - 新建决策向导</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&amp;family=Jetbrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"surface-variant": "#e0e3e5", "on-background": "#191c1e", background: "#f7f9fb", "risk-low": "#52C41A", "error-container": "#ffdad6", "on-error": "#ffffff", primary: "#000000", "on-secondary-container": "#54647a", "surface-container-lowest": "#ffffff", "surface-container-highest": "#e0e3e5", "on-surface-variant": "#4c4546", "on-secondary-fixed": "#0b1c30", "on-error-container": "#93000a", error: "#ba1a1a", secondary: "#505f76", "surface-container-low": "#f2f4f6", "on-primary-fixed-variant": "#474747", outline: "#7e7576", "on-secondary-fixed-variant": "#38485d", "on-primary-fixed": "#1b1b1b", "primary-fixed": "#e2e2e2", "on-tertiary-container": "#ef4444", "secondary-fixed-dim": "#b7c8e1", "secondary-container": "#d0e1fb", "on-tertiary-fixed-variant": "#930013", "risk-high": "#FF4D4F", tertiary: "#000000", "on-primary-container": "#848484", "tertiary-fixed": "#ffdad7", "surface-bright": "#f7f9fb", "surface-container-high": "#e6e8ea", "surface-dim": "#d8dadc", "surface-tint": "#5e5e5e", surface: "#f7f9fb", "on-tertiary": "#ffffff", "a-share-red": "#FF4D4F", "secondary-fixed": "#d3e4fe", "bg-neutral": "#F5F7FA", "tertiary-container": "#410004", "tertiary-fixed-dim": "#ffb3ad", "risk-mid": "#FAAD14", "on-primary": "#ffffff", "primary-fixed-dim": "#c6c6c6", "outline-variant": "#cfc4c5", "inverse-primary": "#c6c6c6", "surface-container": "#eceef0", "inverse-on-surface": "#eff1f3", "on-surface": "#191c1e", "inverse-surface": "#2d3133", "on-secondary": "#ffffff", "on-tertiary-fixed": "#410004", "primary-container": "#1b1b1b", "a-share-green": "#27AE60"}, borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"}, spacing: {base: "4px", "stack-md": "16px", "margin-mobile": "16px", "margin-desktop": "32px", "stack-lg": "24px", "stack-sm": "8px", gutter: "16px"}, fontFamily: {"headline-sm": ["Hanken Grotesk"], "headline-lg-mobile": ["Hanken Grotesk"], "body-lg": ["Hanken Grotesk"], "headline-md": ["Hanken Grotesk"], "data-display": ["JetBrains Mono"], "body-md": ["Hanken Grotesk"], "label-caps": ["JetBrains Mono"], "headline-lg": ["Hanken Grotesk"], headline: ["Geist"], display: ["Geist"], body: ["Geist"], label: ["Jetbrains Mono"]}, fontSize: {"headline-sm": ["18px", {lineHeight: "24px", fontWeight: "600"}], "headline-lg-mobile": ["24px", {lineHeight: "32px", fontWeight: "700"}], "body-lg": ["16px", {lineHeight: "24px", fontWeight: "400"}], "headline-md": ["22px", {lineHeight: "28px", fontWeight: "600"}], "data-display": ["14px", {lineHeight: "20px", fontWeight: "500"}], "body-md": ["14px", {lineHeight: "20px", fontWeight: "400"}], "label-caps": ["12px", {lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "600"}], "headline-lg": ["28px", {lineHeight: "36px", fontWeight: "700"}]}}}};</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #faf8ff;
+            color: #191b22;
+            -webkit-font-smoothing: antialiased;
+        }
+        .wizard-step-active {
+            position: relative;
+        }
+        .wizard-step-active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 2px;
+            background-color: #00327d;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- Top Navigation Anchor -->
+<header class="bg-background dark:bg-background docked full-width top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile h-16 max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="monitoring">monitoring</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-primary-fixed">StockPilot AI</span>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant p-2 rounded-full hover:bg-surface-container-low transition-all" data-icon="close">close</button>
+</div>
+</header>
+<!-- Main Wizard Canvas -->
+<main class="max-w-3xl mx-auto px-margin-mobile pt-stack-lg pb-32">
+<!-- Step Progress Indicator -->
+<div class="mb-12">
+<div class="flex justify-between relative">
+<!-- Progress Line -->
+<div class="absolute top-1/2 left-0 w-full h-[1px] bg-outline-variant -translate-y-1/2 z-0"></div>
+<!-- Step 1: Done -->
+<div class="relative z-10 flex flex-col items-center gap-2 group">
+<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-label-caps font-data-display ring-4 ring-background">
+<span class="material-symbols-outlined text-sm" data-icon="check" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">基础信息</span>
+</div>
+<!-- Step 2: Active -->
+<div class="relative z-10 flex flex-col items-center gap-2">
+<div class="w-10 h-10 -mt-1 rounded-full bg-primary-container text-white flex items-center justify-center text-label-caps font-data-display ring-4 ring-background shadow-sm">
+                        2
+                    </div>
+<span class="font-label-caps text-label-caps text-primary font-bold">理由依据</span>
+</div>
+<!-- Step 3: Pending -->
+<div class="relative z-10 flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-outline flex items-center justify-center text-label-caps font-data-display ring-4 ring-background">
+                        3
+                    </div>
+<span class="font-label-caps text-label-caps text-outline">风险仓位</span>
+</div>
+<!-- Step 4: Pending -->
+<div class="relative z-10 flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-outline flex items-center justify-center text-label-caps font-data-display ring-4 ring-background">
+                        4
+                    </div>
+<span class="font-label-caps text-label-caps text-outline">退出条件</span>
+</div>
+</div>
+</div>
+<!-- Focused Entry Area -->
+<div class="space-y-stack-lg">
+<!-- Section: Selected Asset -->
+<section class="bg-surface-container-lowest p-stack-md rounded-xl border border-outline-variant/30">
+<label class="block font-label-caps text-label-caps text-outline mb-2">已选标的</label>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="show_chart">show_chart</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-background">腾讯控股</h2>
+<p class="font-data-display text-label-caps text-outline">HK.00700</p>
+</div>
+</div>
+<button class="text-primary hover:underline text-body-md font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span> 修改
+                    </button>
+</div>
+</section>
+<!-- Section: Decision Logic -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-on-background">决策理由</h3>
+<span class="font-label-caps text-label-caps text-outline">字数建议: 200+</span>
+</div>
+<div class="relative group">
+<textarea class="w-full min-h-[280px] p-stack-md bg-white border-b-2 border-outline-variant focus:border-primary focus:ring-0 transition-all text-body-lg font-body-lg custom-scrollbar resize-none" placeholder="在此输入您的核心交易逻辑、基本面变化或技术面信号..."></textarea>
+<div class="absolute bottom-4 right-4 flex items-center gap-2 opacity-40 group-focus-within:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary cursor-help" data-icon="auto_awesome" title="AI 辅助润色逻辑">auto_awesome</span>
+</div>
+</div>
+<p class="text-outline text-body-md italic">
+                    “卓越的交易者不仅记录‘买什么’，更清晰地记录‘为什么买’。”
+                </p>
+</section>
+<!-- Section: Evidence & Links -->
+<section class="space-y-4 pt-4">
+<h3 class="font-headline-md text-headline-md text-on-background">依据与证据</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Upload Box -->
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer group">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="add_photo_alternate">add_photo_alternate</span>
+</div>
+<div class="text-center">
+<span class="block font-headline-sm text-headline-sm text-on-surface">上传分析截图</span>
+<span class="text-outline text-label-caps">支持 PNG, JPG, PDF</span>
+</div>
+</div>
+<!-- Link Box -->
+<div class="border border-outline-variant rounded-xl p-6 flex flex-col justify-between bg-white">
+<div class="space-y-2">
+<label class="block font-label-caps text-label-caps text-outline">外部链接 (研报/资讯)</label>
+<input class="w-full border-none p-0 focus:ring-0 font-body-md text-primary placeholder:text-outline-variant" placeholder="https://..." type="url"/>
+</div>
+<button class="mt-4 flex items-center gap-2 text-primary font-semibold hover:opacity-80">
+<span class="material-symbols-outlined text-sm" data-icon="add_link">add_link</span>
+<span>添加链接</span>
+</button>
+</div>
+</div>
+</section>
+<!-- AI Inspection Tip (Subtle) -->
+<div class="p-4 bg-primary/5 border border-primary/10 rounded-lg flex gap-4 items-start">
+<span class="material-symbols-outlined text-primary mt-0.5" data-icon="info" style="font-variation-settings: 'FILL' 1;">info</span>
+<div class="space-y-1">
+<p class="text-on-primary-fixed-variant font-semibold">AI 逻辑预检已就绪</p>
+<p class="text-on-surface-variant text-body-md">输入完成后，系统将自动分析逻辑中的潜在盲点（如过度乐观或忽略关键风险）。</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Actions Container -->
+<footer class="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-outline-variant/20 z-40">
+<div class="max-w-3xl mx-auto px-margin-mobile py-4 flex items-center justify-between">
+<button class="px-6 py-3 border border-primary text-primary font-semibold rounded-xl flex items-center gap-2 hover:bg-primary/5 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="arrow_back">arrow_back</span>
+                上一步
+            </button>
+<div class="flex items-center gap-4">
+<span class="text-outline text-label-caps hidden sm:inline">第 2 步，共 4 步</span>
+<button class="px-8 py-3 bg-primary text-white font-semibold rounded-xl flex items-center gap-2 shadow-lg shadow-primary/20 active:scale-95 transition-all">
+                    下一步
+                    <span class="material-symbols-outlined text-lg" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</footer>
+<!-- Atmosphere Micro-interaction script -->
+<script>
+        // Subtle focus effects for the textarea
+        const textarea = document.querySelector('textarea');
+        textarea.addEventListener('focus', () => {
+            document.body.classList.add('bg-neutral');
+        });
+        textarea.addEventListener('blur', () => {
+            document.body.classList.remove('bg-neutral');
+        });
+
+        // Basic step simulation logic (UI only)
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const ripple = document.createElement('span');
+                ripple.classList.add('absolute', 'bg-white/20', 'rounded-full', 'animate-ping');
+                ripple.style.width = '100px';
+                ripple.style.height = '100px';
+                ripple.style.left = `${e.clientX - 50}px`;
+                ripple.style.top = `${e.clientY - 50}px`;
+                // This is a simplified effect for button feedback
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>纪律卡详情 - StockPilot AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&amp;family=Jetbrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"surface-variant": "#e0e3e5", "on-background": "#191c1e", background: "#f7f9fb", "risk-low": "#52C41A", "error-container": "#ffdad6", "on-error": "#ffffff", primary: "#000000", "on-secondary-container": "#54647a", "surface-container-lowest": "#ffffff", "surface-container-highest": "#e0e3e5", "on-surface-variant": "#4c4546", "on-secondary-fixed": "#0b1c30", "on-error-container": "#93000a", error: "#ba1a1a", secondary: "#505f76", "surface-container-low": "#f2f4f6", "on-primary-fixed-variant": "#474747", outline: "#7e7576", "on-secondary-fixed-variant": "#38485d", "on-primary-fixed": "#1b1b1b", "primary-fixed": "#e2e2e2", "on-tertiary-container": "#ef4444", "secondary-fixed-dim": "#b7c8e1", "secondary-container": "#d0e1fb", "on-tertiary-fixed-variant": "#930013", "risk-high": "#FF4D4F", tertiary: "#000000", "on-primary-container": "#848484", "tertiary-fixed": "#ffdad7", "surface-bright": "#f7f9fb", "surface-container-high": "#e6e8ea", "surface-dim": "#d8dadc", "surface-tint": "#5e5e5e", surface: "#f7f9fb", "on-tertiary": "#ffffff", "a-share-red": "#FF4D4F", "secondary-fixed": "#d3e4fe", "bg-neutral": "#F5F7FA", "tertiary-container": "#410004", "tertiary-fixed-dim": "#ffb3ad", "risk-mid": "#FAAD14", "on-primary": "#ffffff", "primary-fixed-dim": "#c6c6c6", "outline-variant": "#cfc4c5", "inverse-primary": "#c6c6c6", "surface-container": "#eceef0", "inverse-on-surface": "#eff1f3", "on-surface": "#191c1e", "inverse-surface": "#2d3133", "on-secondary": "#ffffff", "on-tertiary-fixed": "#410004", "primary-container": "#1b1b1b", "a-share-green": "#27AE60"}, borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"}, spacing: {base: "4px", "stack-md": "16px", "margin-mobile": "16px", "margin-desktop": "32px", "stack-lg": "24px", "stack-sm": "8px", gutter: "16px"}, fontFamily: {"headline-sm": ["Hanken Grotesk"], "headline-lg-mobile": ["Hanken Grotesk"], "body-lg": ["Hanken Grotesk"], "headline-md": ["Hanken Grotesk"], "data-display": ["JetBrains Mono"], "body-md": ["Hanken Grotesk"], "label-caps": ["JetBrains Mono"], "headline-lg": ["Hanken Grotesk"], headline: ["Geist"], display: ["Geist"], body: ["Geist"], label: ["Jetbrains Mono"]}, fontSize: {"headline-sm": ["18px", {lineHeight: "24px", fontWeight: "600"}], "headline-lg-mobile": ["24px", {lineHeight: "32px", fontWeight: "700"}], "body-lg": ["16px", {lineHeight: "24px", fontWeight: "400"}], "headline-md": ["22px", {lineHeight: "28px", fontWeight: "600"}], "data-display": ["14px", {lineHeight: "20px", fontWeight: "500"}], "body-md": ["14px", {lineHeight: "20px", fontWeight: "400"}], "label-caps": ["12px", {lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "600"}], "headline-lg": ["28px", {lineHeight: "36px", fontWeight: "700"}]}}}};</script>
+<style>
+        body { font-family: 'Hanken Grotesk', sans-serif; -webkit-font-smoothing: antialiased; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .contract-border { border-left: 4px solid #00327d; }
+        .grain-bg { background-image: url("https://www.transparenttextures.com/patterns/asfalt-dark.png"); opacity: 0.03; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- Top AppBar (from Shared Components) -->
+<header class="bg-background dark:bg-background docked full-width top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile h-16 max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<div class="flex flex-col">
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-primary-fixed">纪律卡详情</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="monitoring">monitoring</span>
+</div>
+</div>
+</header>
+<main class="px-margin-mobile pt-stack-md max-w-2xl mx-auto space-y-stack-lg">
+<!-- Stock Hero Section -->
+<section class="bg-surface-container-lowest p-stack-md rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4">
+<span class="bg-risk-low/10 text-risk-low px-3 py-1 rounded-full font-label-caps text-label-caps flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-risk-low animate-pulse"></span>
+                    计划内持有
+                </span>
+</div>
+<div class="space-y-1">
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">贵州茅台</h2>
+<p class="font-data-display text-data-display text-outline">SH: 600519</p>
+</div>
+<div class="mt-stack-md flex items-end gap-2">
+<span class="font-data-display text-3xl font-bold text-a-share-red">155.00</span>
+<span class="font-data-display text-body-md text-a-share-red mb-1">+1.24%</span>
+</div>
+</section>
+<!-- Core Hypothesis (Investment Contract Style) -->
+<section class="bg-surface-container-lowest p-stack-md rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] contract-border">
+<div class="flex items-center gap-2 mb-stack-sm text-primary">
+<span class="material-symbols-outlined text-sm">contract</span>
+<h3 class="font-headline-sm text-headline-sm uppercase tracking-wider">核心买入假设</h3>
+</div>
+<div class="space-y-stack-md">
+<div class="p-3 bg-surface-container-low rounded-lg border border-outline-variant/30">
+<p class="font-body-md text-on-surface leading-relaxed">
+                        基于高端白酒需求韧性及渠道改革红利。预期 Q3 营收增长 15% 以上，且当前估值处于历史中枢以下。若消费复苏逻辑持续，目标位 180.00。
+                    </p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<span class="text-label-caps font-label-caps text-outline">建立日期</span>
+<p class="font-data-display text-body-md">2023-10-24</p>
+</div>
+<div class="space-y-1">
+<span class="text-label-caps font-label-caps text-outline">初始成本</span>
+<p class="font-data-display text-body-md">148.50</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Real-time Monitoring Zone -->
+<section class="space-y-stack-md">
+<h3 class="font-headline-sm text-headline-sm text-on-surface-variant flex items-center gap-2 px-1">
+<span class="material-symbols-outlined text-primary">radar</span>
+                实时风险监控
+            </h3>
+<!-- Stop Loss Card -->
+<div class="bg-surface-container-lowest p-stack-md rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-4 border border-error/10">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-risk-high">vertical_align_bottom</span>
+<span class="font-body-lg text-body-lg font-bold">价格止损位</span>
+</div>
+<span class="font-data-display text-headline-sm text-risk-high">&lt; 150.00</span>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-label-caps font-label-caps text-outline">
+<span>当前价格 155.00</span>
+<span>距离触发 3.33%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden flex">
+<div class="h-full bg-risk-high w-[96.67%]"></div>
+<div class="h-full bg-surface-variant w-[3.33%]"></div>
+</div>
+<p class="text-xs text-on-surface-variant italic">注：价格触碰即发出强提醒，不执行自动卖出，需手动确认。</p>
+</div>
+</div>
+<!-- Logic Invalidation Card -->
+<div class="bg-surface-container-lowest p-stack-md rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-4 border border-risk-mid/10">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-risk-mid">assignment_late</span>
+<span class="font-body-lg text-body-lg font-bold">逻辑失效条件</span>
+</div>
+<span class="bg-risk-mid/10 text-risk-mid px-2 py-0.5 rounded text-xs font-bold">AI 监控中</span>
+</div>
+<ul class="space-y-3">
+<li class="flex items-start gap-3 p-3 rounded-lg bg-surface-container-low">
+<span class="material-symbols-outlined text-outline mt-0.5">check_circle</span>
+<div>
+<p class="font-body-md text-on-surface">财报营收增速低于 10%</p>
+<p class="text-xs text-outline mt-1">数据来源：同花顺/东方财富 官方披露</p>
+</div>
+</li>
+<li class="flex items-start gap-3 p-3 rounded-lg bg-surface-container-low">
+<span class="material-symbols-outlined text-outline mt-0.5">check_circle</span>
+<div>
+<p class="font-body-md text-on-surface">主流券商评级降至“持有”或以下</p>
+<p class="text-xs text-outline mt-1">当前：买入 (12家机构)</p>
+</div>
+</li>
+</ul>
+</div>
+</section>
+<!-- History Triggers -->
+<section class="space-y-stack-md">
+<h3 class="font-headline-sm text-headline-sm text-on-surface-variant flex items-center gap-2 px-1">
+<span class="material-symbols-outlined text-primary">history</span>
+                历史波动提醒
+            </h3>
+<div class="space-y-2">
+<!-- Record 1 -->
+<div class="bg-surface-container-lowest px-4 py-3 rounded-lg flex items-center justify-between border-l-2 border-risk-mid shadow-sm">
+<div class="flex flex-col">
+<span class="font-body-md text-on-surface">触碰预警位 (152.00)</span>
+<span class="text-xs text-outline">2023-11-15 13:45</span>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<!-- Record 2 -->
+<div class="bg-surface-container-lowest px-4 py-3 rounded-lg flex items-center justify-between border-l-2 border-outline shadow-sm">
+<div class="flex flex-col">
+<span class="font-body-md text-on-surface">日涨幅超过 3% 提醒</span>
+<span class="text-xs text-outline">2023-11-02 10:20</span>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Actions -->
+<div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest shadow-[0_-4px_12px_rgba(0,0,0,0.08)] px-margin-mobile py-4 z-50">
+<div class="max-w-2xl mx-auto flex gap-4">
+<button class="flex-1 py-3 px-6 rounded-full border border-primary text-primary font-bold hover:bg-primary/5 transition-all active:scale-95 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">edit</span>
+                编辑规则
+            </button>
+<button class="flex-1 py-3 px-6 rounded-full bg-primary text-on-primary font-bold shadow-lg hover:opacity-90 transition-all active:scale-95 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">task_alt</span>
+                关闭并复盘
+            </button>
+</div>
+</div>
+<!-- Navigation Shell (BottomNavBar from JSON) -->
+<!-- Determined active tab: "纪律卡" (Label matching logic) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-2 pb-safe bg-surface dark:bg-surface-container shadow-[0_-2px_8px_rgba(0,0,0,0.04)] md:hidden pointer-events-none opacity-0">
+<!-- Hidden as it's a detail page and transactional in nature according to Shell Visibility Rule -->
+</nav>
+<script>
+        // Micro-interaction for progress bar
+        document.addEventListener('DOMContentLoaded', () => {
+            const bars = document.querySelectorAll('.h-full.bg-risk-high');
+            bars.forEach(bar => {
+                const finalWidth = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.transition = 'width 1s cubic-bezier(0.4, 0, 0.2, 1)';
+                    bar.style.width = finalWidth;
+                }, 300);
+            });
+        });
+    </script>
+</body></html>
