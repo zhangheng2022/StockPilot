@@ -1,15 +1,15 @@
 import { Hono } from 'hono'
 import { validator } from 'hono/validator'
-import { isDecisionAction, type NewDecisionInput } from '../domain/types'
+import { parseNewDecisionInput, type NewDecisionInput } from '../domain/types'
 import { HttpError } from '../http/errors'
 import type { AppBindings } from '../http/types'
-import { DecisionRepository } from '../repositories/decisions'
+import { createDecisionService } from '../services/decision-service'
 
 export function createDecisionRoutes() {
   const app = new Hono<AppBindings>()
 
   app.get('/', async (c) => {
-    const decisions = await new DecisionRepository(c.env).list(c.get('userId'))
+    const decisions = await createDecisionService(c.env).listDecisions(c.get('userId'))
     return c.json({
       data: decisions,
     })
@@ -17,7 +17,7 @@ export function createDecisionRoutes() {
 
   app.post('/', validateDecisionJson(), async (c) => {
     const input = c.req.valid('json')
-    const decision = await new DecisionRepository(c.env).create(input, c.get('userId'))
+    const decision = await createDecisionService(c.env).createDecision(input, c.get('userId'))
 
     return c.json({
       data: decision,
@@ -40,31 +40,11 @@ function validateDecisionJson() {
 }
 
 function validateNewDecisionInput(value: unknown): NewDecisionInput {
-  const input = isObject(value) ? value : {}
+  const result = parseNewDecisionInput(value)
 
-  if (!input.stockCode) throw new HttpError('validation_error', 'stockCode is required')
-  if (!input.stockName) throw new HttpError('validation_error', 'stockName is required')
-  if (!isDecisionAction(input.action)) throw new HttpError('validation_error', 'action is invalid')
-  if (!input.rationale) throw new HttpError('validation_error', 'rationale is required')
-  if (!input.evidence) throw new HttpError('validation_error', 'evidence is required')
-  if (!input.risk) throw new HttpError('validation_error', 'risk is required')
-  if (typeof input.plannedPosition !== 'number') throw new HttpError('validation_error', 'plannedPosition is required')
-  if (!input.invalidationCondition) throw new HttpError('validation_error', 'invalidationCondition is required')
-  if (!input.exitCondition) throw new HttpError('validation_error', 'exitCondition is required')
-
-  return {
-    stockCode: input.stockCode,
-    stockName: input.stockName,
-    action: input.action,
-    rationale: input.rationale,
-    evidence: input.evidence,
-    risk: input.risk,
-    plannedPosition: input.plannedPosition,
-    invalidationCondition: input.invalidationCondition,
-    exitCondition: input.exitCondition,
+  if (!result.ok) {
+    throw new HttpError(result.code, result.message)
   }
-}
 
-function isObject(value: unknown): value is Partial<NewDecisionInput> {
-  return typeof value === 'object' && value !== null
+  return result.data
 }

@@ -15,6 +15,72 @@ describe('worker api', () => {
     })
   })
 
+  it('returns the today dashboard from persisted user data', async () => {
+    const db = new FakeD1Database((call) => {
+      if (call.sql.includes('from trigger_events')) {
+        return [{
+          stock_code: '600519',
+          stock_name: '贵州茅台',
+          status: 'confirmed',
+          trigger_type: '价格监控',
+          triggered_condition: '跌破止损位',
+          evidence_source: null,
+          relation_to_plan: '已触及止损纪律',
+          suggested_actions: null,
+          created_at: '2026-06-23T00:00:00.000Z',
+        }]
+      }
+
+      if (call.sql.includes('from discipline_cards')) {
+        return [{
+          id: 'card-1',
+          decision_id: 'decision-1',
+          core_thesis: '贵州茅台纪律卡',
+          status: 'needs_review',
+          review_frequency: '每日复核',
+          next_review_at: '今日',
+          updated_at: '2026-06-23T00:00:00.000Z',
+        }]
+      }
+
+      return []
+    })
+    const app = createApp()
+
+    const response = await app.request('/api/dashboard/today', {
+      headers: {
+        'x-user-id': 'dashboard-user',
+      },
+    }, createTestEnv(db))
+
+    expect(response.status).toBe(200)
+    await expect(response.json()).resolves.toMatchObject({
+      data: {
+        summary: {
+          riskTriggerCount: 1,
+          disciplineCardCount: 1,
+        },
+        triggers: [{
+          stockCode: '600519',
+          stockName: '贵州茅台',
+          label: '跌破止损位',
+          tone: 'red',
+          primaryAction: '进入复核',
+        }],
+        disciplineCards: [{
+          title: '贵州茅台纪律卡',
+          progress: 80,
+        }],
+      },
+    })
+    expect(db.calls.some((call) => (
+      call.sql.includes('from trigger_events') && call.bindings[0] === 'dashboard-user'
+    ))).toBe(true)
+    expect(db.calls.some((call) => (
+      call.sql.includes('from discipline_cards') && call.bindings[0] === 'dashboard-user'
+    ))).toBe(true)
+  })
+
   it('creates a decision and lists stored decisions', async () => {
     const rows = [{
       id: 'decision-1',

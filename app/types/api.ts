@@ -1,13 +1,1 @@
-export type ApiSuccess<T> = {
-  data: T
-}
-
-export type ApiFailure = {
-  error: {
-    code: string
-    message: string
-    details?: unknown
-  }
-}
-
-export type ApiResult<T> = ApiSuccess<T> | ApiFailure
+export type { ApiFailure, ApiResult, ApiSuccess } from '../../shared/contracts'

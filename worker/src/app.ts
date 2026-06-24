@@ -3,6 +3,7 @@ import { HTTPException } from 'hono/http-exception'
 import { errorResponse, HttpError } from './http/errors'
 import type { AppBindings } from './http/types'
 import { requestContextMiddleware } from './middleware/request-context'
+import { createDashboardRoutes } from './routes/dashboard'
 import { createDecisionRoutes } from './routes/decisions'
 
 export function createApp() {
@@ -36,6 +37,7 @@ export function createApp() {
   }))
 
   app.route('/api/decisions', createDecisionRoutes())
+  app.route('/api/dashboard', createDashboardRoutes())
 
   app.get('/api/discipline-cards', (c) => c.json({
     data: [],

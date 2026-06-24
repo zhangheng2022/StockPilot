@@ -9,18 +9,25 @@ const root = resolve(import.meta.dirname, '../..')
 
 describe('database schema alignment', () => {
   it('keeps D1 decision constraints aligned with domain enums', () => {
-    const migration = readFileSync(resolve(root, 'worker/migrations/0001_initial.sql'), 'utf8')
+    const initialMigration = readMigration('0001_initial.sql')
+    const alignmentMigration = readMigration('0002_align_domain_constraints_and_job_runs.sql')
 
-    expect(extractCheckValues(migration, 'decisions', 'action')).toEqual([...decisionActions])
-    expect(extractCheckValues(migration, 'decisions', 'status')).toEqual([...decisionStatuses])
+    expect(extractCheckValues(initialMigration, 'decisions', 'action')).toEqual([...decisionActions])
+    expect(extractCheckValues(initialMigration, 'decisions', 'status')).toEqual([...decisionStatuses])
+    expect(extractCheckValues(alignmentMigration, 'decisions_new', 'action')).toEqual([...decisionActions])
+    expect(extractCheckValues(alignmentMigration, 'decisions_new', 'status')).toEqual([...decisionStatuses])
   })
 
   it('keeps remaining D1 status constraints aligned with domain enums', () => {
-    const migration = readFileSync(resolve(root, 'worker/migrations/0001_initial.sql'), 'utf8')
+    const initialMigration = readMigration('0001_initial.sql')
+    const alignmentMigration = readMigration('0002_align_domain_constraints_and_job_runs.sql')
 
-    expect(extractCheckValues(migration, 'discipline_cards', 'status')).toEqual([...disciplineCardStatuses])
-    expect(extractCheckValues(migration, 'trigger_events', 'status')).toEqual([...triggerEventStatuses])
-    expect(extractCheckValues(migration, 'reviews', 'status')).toEqual([...reviewStatuses])
+    expect(extractCheckValues(initialMigration, 'discipline_cards', 'status')).toEqual([...disciplineCardStatuses])
+    expect(extractCheckValues(initialMigration, 'trigger_events', 'status')).toEqual([...triggerEventStatuses])
+    expect(extractCheckValues(initialMigration, 'reviews', 'status')).toEqual([...reviewStatuses])
+    expect(extractCheckValues(alignmentMigration, 'discipline_cards_new', 'status')).toEqual([...disciplineCardStatuses])
+    expect(extractCheckValues(alignmentMigration, 'trigger_events_new', 'status')).toEqual([...triggerEventStatuses])
+    expect(extractCheckValues(alignmentMigration, 'reviews_new', 'status')).toEqual([...reviewStatuses])
   })
 
   it('declares the worker migrations directory in Wrangler config', () => {
@@ -29,6 +36,10 @@ describe('database schema alignment', () => {
     expect(wrangler).toContain('"migrations_dir": "worker/migrations"')
   })
 })
+
+function readMigration(filename: string) {
+  return readFileSync(resolve(root, 'worker/migrations', filename), 'utf8')
+}
 
 function extractCheckValues(sql: string, table: string, column: string) {
   const tableMatch = sql.match(new RegExp(`create table if not exists ${table} \\(([\\s\\S]*?)\\n\\);`, 'i'))
