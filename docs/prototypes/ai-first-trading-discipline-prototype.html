@@ -1,0 +1,2376 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Stock Pilot AI-first 产品原型</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@300..700,0..1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --surface: #fffdf8;
+      --surface-2: #f9f6ef;
+      --ink: #1e2420;
+      --muted: #68736b;
+      --line: #ddd6c8;
+      --primary: #204b3a;
+      --primary-soft: #e7f1ea;
+      --red: #c2413a;
+      --red-soft: #fbe8e5;
+      --amber: #b7791f;
+      --amber-soft: #fff3d8;
+      --green: #23815b;
+      --shadow: 0 24px 70px rgb(30 36 32 / 0.14);
+      --radius: 8px;
+      font-family: "Geist", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        linear-gradient(90deg, rgb(32 75 58 / 0.05) 1px, transparent 1px),
+        linear-gradient(rgb(32 75 58 / 0.05) 1px, transparent 1px),
+        var(--bg);
+      background-size: 28px 28px;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    button, input, textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24;
+      font-size: 21px;
+      line-height: 1;
+    }
+
+    .page {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
+      gap: 34px;
+      align-items: end;
+      min-height: 210px;
+      margin-bottom: 26px;
+    }
+
+    .kicker {
+      margin: 0 0 12px;
+      color: var(--primary);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(36px, 6vw, 72px);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 520px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .hero-panel {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgb(255 253 248 / 0.72);
+      box-shadow: 0 14px 45px rgb(30 36 32 / 0.08);
+    }
+
+    .flow-row {
+      display: grid;
+      grid-template-columns: 32px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .flow-row:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .flow-num {
+      display: grid;
+      width: 32px;
+      height: 32px;
+      place-items: center;
+      border-radius: var(--radius);
+      background: var(--primary);
+      color: white;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .flow-row strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .flow-row span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .prototype-grid {
+      display: grid;
+      grid-template-columns: 430px minmax(0, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    .phone {
+      position: sticky;
+      top: 20px;
+      width: 390px;
+      min-height: 844px;
+      margin: 0 auto;
+      overflow: hidden;
+      border: 10px solid #121612;
+      border-radius: 34px;
+      background: var(--bg);
+      box-shadow: var(--shadow);
+    }
+
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 34px;
+      padding: 0 18px;
+      color: var(--ink);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .appbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      padding: 0 16px;
+      border-bottom: 1px solid rgb(221 214 200 / 0.72);
+      background: rgb(244 241 234 / 0.88);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 800;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 29px;
+      height: 29px;
+      place-items: center;
+      border-radius: var(--radius);
+      background: var(--primary);
+      color: white;
+      font-size: 12px;
+    }
+
+    .icon-button {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--ink);
+    }
+
+    .screen {
+      display: none;
+      height: 654px;
+      overflow: auto;
+      padding: 16px 16px 92px;
+      scrollbar-width: none;
+    }
+
+    .screen::-webkit-scrollbar {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .screen-title {
+      margin: 0 0 4px;
+      font-size: 26px;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    .screen-subtitle {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .card {
+      margin-bottom: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 8px 22px rgb(30 36 32 / 0.06);
+    }
+
+    .ai-brief {
+      border-color: rgb(32 75 58 / 0.16);
+      background: var(--primary-soft);
+      box-shadow: none;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .label {
+      color: var(--muted);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 26px;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge.red {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .badge.amber {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .badge.green {
+      background: var(--primary-soft);
+      color: var(--green);
+    }
+
+    .action-title {
+      margin: 8px 0 6px;
+      font-size: 17px;
+      line-height: 1.45;
+    }
+
+    .body-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .metric {
+      padding: 10px;
+      border-radius: var(--radius);
+      background: var(--surface-2);
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 3px;
+      font-size: 15px;
+    }
+
+    .source-list,
+    .choice-list,
+    .case-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .source-item,
+    .choice-item {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 9px;
+      align-items: start;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .choice-item.selected {
+      border-color: rgb(32 75 58 / 0.26);
+      background: var(--primary-soft);
+    }
+
+    .choice-item.warning {
+      border-color: rgb(194 65 58 / 0.22);
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .source-icon,
+    .choice-icon {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      color: var(--primary);
+    }
+
+    .choice-item.warning .choice-icon {
+      background: rgb(255 253 248 / 0.72);
+      color: var(--red);
+    }
+
+    .research-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .research-tile {
+      min-height: 76px;
+      padding: 10px;
+      border-radius: var(--radius);
+      background: var(--surface-2);
+    }
+
+    .research-tile strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .case-card {
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    .case-card.active {
+      border-color: rgb(32 75 58 / 0.28);
+      background: var(--primary-soft);
+    }
+
+    .case-card h4 {
+      margin: 7px 0 4px;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .case-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .compact-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .compact-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      padding: 10px;
+      border: 0;
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .compact-row.active {
+      outline: 1px solid rgb(32 75 58 / 0.28);
+      background: var(--primary-soft);
+    }
+
+    .compact-row strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 14px;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 42px;
+      padding: 0 14px;
+      border-radius: var(--radius);
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .btn.secondary {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--primary);
+    }
+
+    .btn.warning {
+      background: var(--red);
+    }
+
+    .toast {
+      position: absolute;
+      right: 16px;
+      bottom: 82px;
+      left: 16px;
+      z-index: 5;
+      padding: 11px 12px;
+      border: 1px solid rgb(32 75 58 / 0.18);
+      border-radius: var(--radius);
+      background: rgb(30 36 32 / 0.92);
+      color: white;
+      font-size: 13px;
+      line-height: 1.5;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .text-input {
+      width: 100%;
+      min-height: 92px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--ink);
+      padding: 12px;
+      outline: 0;
+      line-height: 1.6;
+    }
+
+    .text-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgb(32 75 58 / 0.14);
+    }
+
+    .chat {
+      display: grid;
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .bubble {
+      width: fit-content;
+      max-width: 92%;
+      padding: 11px 12px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .bubble.ai {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .bubble.user {
+      justify-self: end;
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+
+    .bubble.warn {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .progress {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--surface-2);
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--primary);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 0;
+      margin-top: 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 84px minmax(0, 1fr);
+      gap: 10px;
+      padding: 11px;
+      border-top: 1px solid var(--line);
+      background: var(--surface);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .timeline-row:first-child {
+      border-top: 0;
+    }
+
+    .timeline-row time {
+      color: var(--muted);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      height: 72px;
+      border-top: 1px solid var(--line);
+      background: rgb(255 253 248 / 0.94);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav-item {
+      display: grid;
+      place-items: center;
+      gap: 3px;
+      color: var(--muted);
+      background: transparent;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-item.active .material-symbols-outlined {
+      font-variation-settings: "FILL" 1, "wght" 600, "GRAD" 0, "opsz" 24;
+    }
+
+    .side-panel {
+      display: grid;
+      gap: 14px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgb(255 253 248 / 0.78);
+      box-shadow: 0 12px 38px rgb(30 36 32 / 0.08);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-header h2 {
+      margin: 4px 0 0;
+      font-size: 22px;
+    }
+
+    .panel-body {
+      padding: 16px;
+    }
+
+    .mini-map {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .mini-screen {
+      min-height: 120px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+    }
+
+    .mini-screen.active {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .mini-screen strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .mini-line {
+      height: 8px;
+      margin-top: 6px;
+      border-radius: 999px;
+      background: var(--line);
+    }
+
+    .mini-line.short {
+      width: 56%;
+    }
+
+    .mini-line.mid {
+      width: 74%;
+    }
+
+    .principles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .principle {
+      min-height: 118px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    .principle strong {
+      display: block;
+      margin: 8px 0 6px;
+      font-size: 15px;
+    }
+
+    .notice {
+      padding: 12px;
+      border: 1px solid rgb(183 121 31 / 0.24);
+      border-radius: var(--radius);
+      background: var(--amber-soft);
+      color: #775116;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .chart-bars {
+      display: grid;
+      align-items: end;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 4px;
+      height: 78px;
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: var(--radius);
+      background: var(--surface-2);
+    }
+
+    .chart-bars span {
+      display: block;
+      min-height: 14px;
+      border-radius: 4px 4px 0 0;
+      background: var(--primary);
+      opacity: 0.78;
+    }
+
+    .fab {
+      position: absolute;
+      right: 18px;
+      bottom: 86px;
+      display: grid;
+      width: 54px;
+      height: 54px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 16px 40px rgb(32 75 58 / 0.35);
+    }
+
+    @media (max-width: 940px) {
+      .hero,
+      .prototype-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: unset;
+      }
+
+      .phone {
+        position: relative;
+        top: 0;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .page {
+        width: 100%;
+        padding: 18px 10px 30px;
+      }
+
+      .phone {
+        width: min(390px, calc(100vw - 20px));
+        border-width: 8px;
+      }
+
+      .principles,
+      .mini-map {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div>
+        <p class="kicker">AI-FIRST TRADING DISCIPLINE PROTOTYPE</p>
+        <h1>Stock Pilot 交易纪律助手</h1>
+        <p class="hero-copy">
+          这个原型把产品从表单工具改成 AI 研究工作流：用户可以同时管理多个交易想法，AI 分别研究、列出判断框架和疑问，再让用户确认关键事实与风险偏好。
+        </p>
+      </div>
+
+      <aside class="hero-panel" aria-label="产品闭环">
+        <div class="flow-row">
+          <div class="flow-num">01</div>
+          <div><strong>多个交易想法</strong><span>买入、减仓、继续持有可以并行存在，每个想法有自己的状态。</span></div>
+        </div>
+        <div class="flow-row">
+          <div class="flow-num">02</div>
+          <div><strong>AI 先研究</strong><span>整理已接入信息、候选理由、反向风险和需要用户确认的疑问。</span></div>
+        </div>
+        <div class="flow-row">
+          <div class="flow-num">03</div>
+          <div><strong>确认后生成计划</strong><span>用户不用组织长篇语言，只确认事实、风险承受和最终计划边界。</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="prototype-grid">
+      <div class="phone" aria-label="移动端原型">
+        <div class="statusbar">
+          <span>09:41</span>
+          <span>5G 100%</span>
+        </div>
+        <header class="appbar">
+          <div class="brand">
+            <span class="brand-mark">AI</span>
+            <span>Stock Pilot</span>
+          </div>
+        </header>
+
+        <section class="screen active" data-screen="today">
+          <h2 class="screen-title">今天要处理</h2>
+          <p class="screen-subtitle">AI 按计划重要性排序，只保留你现在需要做的动作。</p>
+
+          <article class="card ai-brief">
+            <div class="row">
+              <span class="badge green"><span class="material-symbols-outlined">auto_awesome</span>AI 持续盯盘中</span>
+              <span class="label">3 个计划</span>
+            </div>
+            <h3 class="action-title">有 2 件事建议今天处理</h3>
+            <p class="body-copy">宁德时代接近你写下的止损条件；贵州茅台的财报已经发布，需要确认原理由是否仍成立。</p>
+          </article>
+
+          <article class="card">
+            <div class="row">
+              <span class="badge red">必须处理</span>
+              <span class="label">300750</span>
+            </div>
+            <h3 class="action-title">宁德时代接近停止买入条件</h3>
+            <p class="body-copy">你原计划写的是“跌破成本 8% 且放量下跌就停止买入逻辑”。现在价格已接近该区间，成交量还需要你确认。</p>
+            <div class="metric-grid">
+              <div class="metric"><span class="label">相关价格</span><strong>-7.4%</strong></div>
+              <div class="metric"><span class="label">距离条件</span><strong>0.6%</strong></div>
+            </div>
+            <div class="button-row">
+              <button class="btn secondary" type="button" data-watch="catl">继续盯</button>
+              <button class="btn warning" type="button" data-summary="catl">结束并总结</button>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="row">
+              <span class="badge amber">建议看看</span>
+              <span class="label">600519</span>
+            </div>
+            <h3 class="action-title">贵州茅台财报已更新</h3>
+            <p class="body-copy">AI 发现财报和你原计划里的“现金流稳定”有关，但不直接给出买卖结论。建议先核对收入和库存变化。</p>
+            <div class="button-row">
+              <button class="btn secondary" type="button" data-watch="moutai">查看计划</button>
+              <button class="btn secondary" type="button" data-toast="已暂时忽略这条提醒，今天不再置顶。">先忽略</button>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="row">
+              <span class="badge">等你确认</span>
+              <span class="label">草稿</span>
+            </div>
+            <h3 class="action-title">腾讯减仓想法等待确认风险偏好</h3>
+            <p class="body-copy">AI 已整理价格波动、持仓压力和可能的分批减仓方案，还需要你确认最大回撤和是否接受继续持有。</p>
+            <button class="btn" type="button" data-case="tencent" style="width:100%;margin-top:12px;">确认信息</button>
+          </article>
+        </section>
+
+        <section class="screen" data-screen="ideas">
+          <h2 class="screen-title">想法列表</h2>
+          <p class="screen-subtitle">所有交易想法先进入列表。每条想法都有独立状态、AI 研究进度和下一步动作。</p>
+
+          <div class="metric-grid">
+            <div class="metric"><span class="label">全部想法</span><strong>3</strong></div>
+            <div class="metric"><span class="label">等待确认</span><strong>2</strong></div>
+          </div>
+
+          <article class="card">
+            <div class="row">
+              <span class="label">想法队列</span>
+              <button class="btn secondary" type="button" data-jump="idea-new" style="min-height:34px;padding:0 10px;">新增</button>
+            </div>
+            <div class="case-list">
+              <button class="case-card active" type="button" data-case="catl">
+                <div class="case-meta">
+                  <span class="badge amber">待确认</span>
+                  <span class="label">300750</span>
+                </div>
+                <h4>宁德时代买入想法</h4>
+                <p class="body-copy">AI 已研究价格、财报摘要和历史计划，等待确认风险边界。</p>
+              </button>
+              <button class="case-card" type="button" data-case="tencent">
+                <div class="case-meta">
+                  <span class="badge amber">待确认</span>
+                  <span class="label">00700</span>
+                </div>
+                <h4>腾讯减仓想法</h4>
+                <p class="body-copy">AI 已整理分批减仓方案，等待确认是否保留核心仓位。</p>
+              </button>
+              <button class="case-card" type="button" data-case="moutai">
+                <div class="case-meta">
+                  <span class="badge green">可生成计划</span>
+                  <span class="label">600519</span>
+                </div>
+                <h4>贵州茅台继续持有</h4>
+                <p class="body-copy">AI 已完成财报和现金流检查，可以进入计划预览。</p>
+              </button>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="row">
+              <span class="label">列表页只做分流</span>
+              <span class="badge">IA</span>
+            </div>
+            <p class="body-copy" style="margin-top:8px;">点击任意想法进入详情页；点击新增进入新增页。列表不承载完整研究内容，避免所有交互挤在一个页面。</p>
+          </article>
+        </section>
+
+        <section class="screen" data-screen="idea-detail">
+          <div class="row" style="margin-bottom:12px;">
+            <button class="icon-button" type="button" data-jump="ideas" aria-label="返回想法列表">
+              <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <span class="badge amber">待确认</span>
+          </div>
+          <h2 class="screen-title">想法详情</h2>
+          <p class="screen-subtitle">详情页展示单条想法的 AI 研究结果、使用的信息和需要用户确认的边界。</p>
+
+          <div class="chat" id="chat">
+            <div class="bubble user">我想买宁德时代</div>
+            <div class="bubble ai">我先按“买入宁德时代 300750”的方向研究。已接入：近期价格、历史计划、财报摘要。未接入：实时盘口和完整新闻源，需要你确认。</div>
+          </div>
+
+          <article class="card ai-brief">
+            <div class="row">
+              <span class="badge green">研究摘要</span>
+              <span class="label">待确认</span>
+            </div>
+            <h3 class="action-title">AI 初步理解</h3>
+            <p class="body-copy">你可能是在考虑买入宁德时代，并用小仓位验证电池出货恢复逻辑。这个理解需要你确认，不会直接变成买入建议。</p>
+            <div class="research-grid">
+              <div class="research-tile"><span class="label">可能理由</span><strong>出货改善、估值回落</strong></div>
+              <div class="research-tile"><span class="label">反向风险</span><strong>价格破位、财报不及预期</strong></div>
+              <div class="research-tile"><span class="label">缺口</span><strong>风险承受未确认</strong></div>
+              <div class="research-tile"><span class="label">状态</span><strong>不能开始盯盘</strong></div>
+            </div>
+          </article>
+
+          <article class="card">
+            <span class="label">AI 使用的信息</span>
+            <div class="source-list">
+              <div class="source-item">
+                <span class="source-icon"><span class="material-symbols-outlined">history</span></span>
+                <span>你的历史计划：过去更适合小仓位验证，不适合一次重仓。</span>
+              </div>
+              <div class="source-item">
+                <span class="source-icon"><span class="material-symbols-outlined">query_stats</span></span>
+                <span>已接入数据：近期价格回撤接近关键区间，财报摘要显示出货改善需要继续验证。</span>
+              </div>
+              <div class="source-item">
+                <span class="source-icon"><span class="material-symbols-outlined">help</span></span>
+                <span>未接入信息：实时盘口和完整新闻源，相关判断需要你人工确认。</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="row">
+              <span class="label">需要你确认</span>
+              <span class="badge amber">关键疑问</span>
+            </div>
+            <p class="body-copy" style="margin:8px 0 10px;">AI 已经整理候选计划，你只需要确认最关键的边界。</p>
+            <div class="choice-list">
+              <button class="choice-item selected" type="button">
+                <span class="choice-icon"><span class="material-symbols-outlined">check</span></span>
+                <span>方向确认：买入宁德时代 300750，小仓位验证。</span>
+              </button>
+              <button class="choice-item selected" type="button">
+                <span class="choice-icon"><span class="material-symbols-outlined">check</span></span>
+                <span>认可理由：出货改善和估值回落，但不假设一定上涨。</span>
+              </button>
+              <button class="choice-item warning" type="button">
+                <span class="choice-icon"><span class="material-symbols-outlined">priority_high</span></span>
+                <span>风险边界待确认：最大仓位 10%，跌破成本 8% 且放量下跌就停止买入逻辑。</span>
+              </button>
+            </div>
+            <div class="button-row">
+              <button class="btn secondary" type="button" data-action="save-draft">保存为草稿</button>
+              <button class="btn" type="button" data-action="confirm-preview">确认并预览</button>
+            </div>
+          </article>
+        </section>
+
+        <section class="screen" data-screen="idea-new">
+          <div class="row" style="margin-bottom:12px;">
+            <button class="icon-button" type="button" data-jump="ideas" aria-label="返回想法列表">
+              <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <span class="badge">新增</span>
+          </div>
+          <h2 class="screen-title">新增想法</h2>
+          <p class="screen-subtitle">新增页只负责录入一句交易想法并启动 AI 研究，不展示列表和详情。</p>
+
+          <article class="card">
+            <label class="label" for="ideaText">一句话想法</label>
+            <textarea id="ideaText" class="text-input">我想买宁德时代</textarea>
+            <button class="btn" id="startInterview" type="button" style="width:100%;margin-top:10px;">
+              让 AI 先研究
+            </button>
+          </article>
+
+          <article class="card ai-brief">
+            <span class="badge green">新增后流转</span>
+            <h3 class="action-title">创建想法草稿</h3>
+            <p class="body-copy">提交后进入想法详情页，AI 会展示研究摘要、已使用信息和需要你确认的关键边界。</p>
+          </article>
+        </section>
+
+        <section class="screen" data-screen="preview">
+          <h2 class="screen-title">计划预览</h2>
+          <p class="screen-subtitle">每个想法独立生成计划预览。确认前不会进入正式盯盘。</p>
+
+          <article class="card">
+            <div class="row">
+              <span class="label">可预览计划</span>
+              <span class="badge">2 个</span>
+            </div>
+            <div class="compact-list">
+              <div class="compact-row">
+                <div>
+                  <strong>宁德时代买入计划</strong>
+                  <p class="body-copy">风险边界已确认，等待开始盯盘。</p>
+                </div>
+                <span class="badge green">当前</span>
+              </div>
+              <div class="compact-row">
+                <div>
+                  <strong>贵州茅台继续持有计划</strong>
+                  <p class="body-copy">现金流和库存条件已整理，可切换查看。</p>
+                </div>
+                <span class="badge">可预览</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card ai-brief">
+            <div class="row">
+              <div>
+                <span class="label">交易计划</span>
+                <h3 class="action-title" style="margin-top:4px;">宁德时代 300750</h3>
+              </div>
+              <span class="badge green">可开始盯盘</span>
+            </div>
+            <div class="chart-bars" aria-label="计划风险可视化">
+              <span style="height:32%"></span><span style="height:42%"></span><span style="height:46%"></span><span style="height:58%"></span>
+              <span style="height:72%"></span><span style="height:65%"></span><span style="height:55%"></span><span style="height:48%"></span>
+              <span style="height:39%"></span><span style="height:44%"></span><span style="height:52%"></span><span style="height:60%"></span>
+            </div>
+          </article>
+
+          <article class="card stack">
+            <div><span class="label">AI 研究摘要</span><p class="body-copy">已参考近期价格、财报摘要和你的历史计划；实时盘口和完整新闻源未接入，相关变化需要人工确认。</p></div>
+            <div><span class="label">我打算怎么做</span><p class="body-copy">买入宁德时代，小仓位验证新能源订单恢复逻辑。</p></div>
+            <div><span class="label">我认可的理由</span><p class="body-copy">AI 整理出“出货改善、估值回落、但仍需验证财报质量”，用户确认作为计划理由。</p></div>
+            <div><span class="label">我可能错在哪里</span><p class="body-copy">出货改善没有持续、价格跌破关键区间，或财报验证失败。</p></div>
+            <div><span class="label">什么情况要停下来</span><p class="body-copy">如果跌破成本 8% 且放量下跌，就停止买入逻辑。</p></div>
+            <div><span class="label">接下来盯什么</span><p class="body-copy">价格、成交量、下一次财报和订单数据。</p></div>
+            <div><span class="label">仓位是否合适</span><p class="body-copy">计划仓位 10%，风险暴露较克制，适合先验证而非重仓下注。</p></div>
+            <div><span class="label">最终确认</span><p class="body-copy">这是你的交易计划，不是 AI 的买卖建议。开始盯盘只代表你确认这个计划值得持续检查。</p></div>
+          </article>
+
+          <article class="card stack">
+            <div class="row">
+              <div>
+                <span class="label">另一个计划预览</span>
+                <h3 class="action-title" style="margin-top:4px;">贵州茅台 600519</h3>
+              </div>
+              <span class="badge green">可开始盯盘</span>
+            </div>
+            <div><span class="label">AI 研究摘要</span><p class="body-copy">已参考财报摘要、现金流和库存变化；实时公告源未接入，需要人工确认重大事件。</p></div>
+            <div><span class="label">我打算怎么做</span><p class="body-copy">继续持有，不新增仓位，重点验证现金流稳定性。</p></div>
+            <div><span class="label">什么情况要停下来</span><p class="body-copy">如果连续两个季度现金流弱化且库存压力扩大，就重新评估持有理由。</p></div>
+          </article>
+
+          <div class="button-row">
+            <button class="btn secondary" type="button" data-jump="idea-detail">继续修改</button>
+            <button class="btn" type="button" data-jump="watch-detail">开始盯盘</button>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="watch">
+          <h2 class="screen-title">盯盘列表</h2>
+          <p class="screen-subtitle">所有正式进入盯盘的计划先进入列表。列表负责排序、状态和入口，详情页承载完整检查记录。</p>
+
+          <article class="card">
+            <div class="row">
+              <span class="label">盯盘中的计划</span>
+              <span class="badge">2 个</span>
+            </div>
+            <div class="compact-list">
+              <button class="compact-row active" type="button" data-watch="catl">
+                <div>
+                  <strong>宁德时代买入</strong>
+                  <p class="body-copy">接近止损边界，优先级最高。</p>
+                </div>
+                <span class="badge red">必须处理</span>
+              </button>
+              <button class="compact-row" type="button" data-watch="moutai">
+                <div>
+                  <strong>贵州茅台持有</strong>
+                  <p class="body-copy">财报已更新，建议确认现金流。</p>
+                </div>
+                <span class="badge amber">建议看看</span>
+              </button>
+            </div>
+          </article>
+        </section>
+
+        <section class="screen" data-screen="watch-detail">
+          <div class="row" style="margin-bottom:12px;">
+            <button class="icon-button" type="button" data-jump="watch" aria-label="返回盯盘列表">
+              <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <span class="badge red">必须处理</span>
+          </div>
+          <h2 class="screen-title">盯盘详情</h2>
+          <p class="screen-subtitle">详情页展示单个计划的检查进度、触发条件、AI 解释和可执行动作。</p>
+
+          <article class="card">
+            <div class="row">
+              <div>
+                <span class="label">300750</span>
+                <h3 class="action-title" style="margin-top:4px;">宁德时代买入计划</h3>
+              </div>
+              <span class="badge red">接近条件</span>
+            </div>
+            <p class="body-copy">原计划：跌破成本 8% 且放量下跌就停止买入逻辑。AI 正在检查价格、成交量和财报变化。</p>
+            <div style="margin-top:12px;">
+              <div class="row"><span class="label">盯盘进度</span><strong>74%</strong></div>
+              <div class="progress" style="margin-top:7px;"><span style="width:74%"></span></div>
+            </div>
+          </article>
+
+          <section class="card">
+            <span class="label">AI 正在盯什么</span>
+            <div class="timeline">
+              <div class="timeline-row"><time>价格</time><span>接近成本下方 8% 区间，需要确认是否放量。</span></div>
+              <div class="timeline-row"><time>成交量</time><span>今天量能尚未达到你写下的“放量下跌”条件。</span></div>
+              <div class="timeline-row"><time>财报</time><span>下一次财报是验证订单恢复逻辑的关键材料。</span></div>
+            </div>
+          </section>
+
+          <article class="card">
+            <span class="label">调整计划时 AI 会检查</span>
+            <p class="body-copy" style="margin-top:8px;">如果你把止损线越改越低，或者在没有新证据时提高仓位，AI 会提醒这可能是在绕开原计划。</p>
+            <div class="button-row">
+              <button class="btn secondary" type="button">调整计划</button>
+              <button class="btn warning" type="button" data-jump="summary-detail">结束并总结</button>
+            </div>
+          </article>
+        </section>
+
+        <section class="screen" data-screen="plan-adjust">
+          <h2 class="screen-title">调整计划</h2>
+          <p class="screen-subtitle">调整计划不是直接编辑旧计划，而是生成一个带原因和风险判断的新版本。</p>
+        </section>
+
+        <section class="screen" data-screen="summary">
+          <h2 class="screen-title">总结列表</h2>
+          <p class="screen-subtitle">所有待总结和已完成总结先进入列表。详情页用于对照原计划、实际执行和 AI 归因。</p>
+
+          <article class="card">
+            <div class="row">
+              <span class="label">待总结队列</span>
+              <span class="badge">2 笔</span>
+            </div>
+            <div class="case-list">
+              <button class="case-card active" type="button" data-summary="catl">
+                <div class="case-meta">
+                  <span class="badge amber">待完成</span>
+                  <span class="label">300750</span>
+                </div>
+                <h4>宁德时代买入计划</h4>
+                <p class="body-copy">重点检查：是否按止损边界执行。</p>
+              </button>
+              <button class="case-card" type="button" data-summary="moutai">
+                <div class="case-meta">
+                  <span class="badge green">已完成</span>
+                  <span class="label">600519</span>
+                </div>
+                <h4>贵州茅台持有计划</h4>
+                <p class="body-copy">已归因：按计划执行。</p>
+              </button>
+            </div>
+          </article>
+        </section>
+
+        <section class="screen" data-screen="summary-detail">
+          <div class="row" style="margin-bottom:12px;">
+            <button class="icon-button" type="button" data-jump="summary" aria-label="返回总结列表">
+              <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <span class="badge amber">待完成</span>
+          </div>
+          <h2 class="screen-title">总结详情</h2>
+          <p class="screen-subtitle">详情页对照原计划和实际行为，沉淀这笔交易最该记住的问题。</p>
+
+          <article class="card">
+            <div class="row">
+              <span class="badge amber">待完成</span>
+              <span class="label">300750</span>
+            </div>
+            <h3 class="action-title">这次最该记住什么？</h3>
+            <textarea class="text-input">我在接近止损时想继续等，说明原计划对成交量条件写得还不够具体。</textarea>
+            <div class="button-row">
+              <button class="btn secondary" type="button">稍后补充</button>
+              <button class="btn" type="button" data-action="save-summary">保存总结</button>
+            </div>
+          </article>
+
+          <article class="card stack">
+            <div><span class="label">原来打算</span><p class="body-copy">小仓位买入，跌破成本 8% 且放量下跌时停止买入逻辑。</p></div>
+            <div><span class="label">实际执行</span><p class="body-copy">接近条件时犹豫，没有立即检查成交量。</p></div>
+            <div><span class="label">AI 归因标签</span><p><span class="badge red">止损拖延</span> <span class="badge amber">条件不够具体</span></p></div>
+          </article>
+
+          <article class="card stack">
+            <div class="row">
+              <span class="label">已完成示例</span>
+              <span class="badge green">贵州茅台</span>
+            </div>
+            <div><span class="label">原来打算</span><p class="body-copy">继续持有，不新增仓位，财报后确认现金流。</p></div>
+            <div><span class="label">实际执行</span><p class="body-copy">按计划等待财报，未因为短期波动调整仓位。</p></div>
+            <div><span class="label">AI 归因标签</span><p><span class="badge green">按计划执行</span> <span class="badge">风险判断充分</span></p></div>
+          </article>
+        </section>
+
+        <section class="screen" data-screen="me">
+          <h2 class="screen-title">统计总览</h2>
+          <p class="screen-subtitle">从整体层面看交易纪律执行情况，不展示单条待办。</p>
+
+          <article class="card ai-brief">
+            <span class="label">最近 10 笔计划</span>
+            <h3 class="action-title">3 笔出现止损拖延</h3>
+            <p class="body-copy">共同模式：条件接近时倾向于等待更多证据，导致计划边界变模糊。</p>
+          </article>
+
+          <article class="card">
+            <div class="row">
+              <span class="label">近期样本</span>
+              <span class="badge">多例归因</span>
+            </div>
+            <div class="compact-list">
+              <div class="compact-row">
+                <div>
+                  <strong>宁德时代</strong>
+                  <p class="body-copy">接近止损时想继续等。</p>
+                </div>
+                <span class="badge red">止损拖延</span>
+              </div>
+              <div class="compact-row">
+                <div>
+                  <strong>腾讯</strong>
+                  <p class="body-copy">减仓理由从“降低波动”变成“害怕回撤”。</p>
+                </div>
+                <span class="badge amber">理由漂移</span>
+              </div>
+              <div class="compact-row">
+                <div>
+                  <strong>贵州茅台</strong>
+                  <p class="body-copy">按计划等待财报确认。</p>
+                </div>
+                <span class="badge green">按计划执行</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <span class="label">行为模式</span>
+            <div class="metric-grid">
+              <div class="metric"><span class="label">仓位过重</span><strong>2 次</strong></div>
+              <div class="metric"><span class="label">理由不清</span><strong>4 次</strong></div>
+              <div class="metric"><span class="label">提前卖出</span><strong>1 次</strong></div>
+              <div class="metric"><span class="label">风险不足</span><strong>3 次</strong></div>
+            </div>
+          </article>
+
+          <article class="card">
+            <span class="label">下一次 AI 会优先确认</span>
+            <p class="body-copy" style="margin-top:8px;">当你写下“再等等”“差不多”“看情况”时，AI 会先给出候选边界，再让你确认价格、事件或时间条件。</p>
+          </article>
+        </section>
+
+        <button class="fab" type="button" data-jump="idea-new" aria-label="记录交易想法">
+          <span class="material-symbols-outlined">add</span>
+        </button>
+
+        <nav class="bottom-nav" aria-label="底部导航">
+          <button class="nav-item active" type="button" data-nav="today"><span class="material-symbols-outlined">home</span><span>今天</span></button>
+          <button class="nav-item" type="button" data-nav="ideas"><span class="material-symbols-outlined">chat_bubble</span><span>想法</span></button>
+          <button class="nav-item" type="button" data-nav="watch"><span class="material-symbols-outlined">visibility</span><span>盯盘</span></button>
+          <button class="nav-item" type="button" data-nav="summary"><span class="material-symbols-outlined">edit_note</span><span>总结</span></button>
+          <button class="nav-item" type="button" data-nav="me"><span class="material-symbols-outlined">dashboard</span><span>统计</span></button>
+        </nav>
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+      </div>
+
+      <aside class="side-panel">
+        <section class="panel">
+          <div class="panel-header">
+            <span class="label">PROTOTYPE MAP</span>
+            <h2>一个产品壳内的页面结构</h2>
+          </div>
+          <div class="panel-body mini-map">
+            <button class="mini-screen active" type="button" data-jump="today"><strong>今天</strong><div class="mini-line"></div><div class="mini-line mid"></div><div class="mini-line short"></div></button>
+            <button class="mini-screen" type="button" data-jump="ideas"><strong>想法列表</strong><div class="mini-line mid"></div><div class="mini-line"></div><div class="mini-line short"></div></button>
+            <button class="mini-screen" type="button" data-jump="idea-detail"><strong>想法详情</strong><div class="mini-line"></div><div class="mini-line mid"></div><div class="mini-line short"></div></button>
+            <button class="mini-screen" type="button" data-jump="idea-new"><strong>新增想法</strong><div class="mini-line short"></div><div class="mini-line"></div><div class="mini-line mid"></div></button>
+            <button class="mini-screen" type="button" data-jump="preview"><strong>计划预览</strong><div class="mini-line"></div><div class="mini-line mid"></div><div class="mini-line"></div></button>
+            <button class="mini-screen" type="button" data-jump="watch"><strong>盯盘列表</strong><div class="mini-line mid"></div><div class="mini-line short"></div><div class="mini-line"></div></button>
+            <button class="mini-screen" type="button" data-jump="watch-detail"><strong>盯盘详情</strong><div class="mini-line"></div><div class="mini-line mid"></div><div class="mini-line short"></div></button>
+            <button class="mini-screen" type="button" data-jump="plan-adjust"><strong>调整计划</strong><div class="mini-line"></div><div class="mini-line short"></div><div class="mini-line mid"></div></button>
+            <button class="mini-screen" type="button" data-jump="summary"><strong>总结列表</strong><div class="mini-line"></div><div class="mini-line"></div><div class="mini-line short"></div></button>
+            <button class="mini-screen" type="button" data-jump="summary-detail"><strong>总结详情</strong><div class="mini-line short"></div><div class="mini-line"></div><div class="mini-line mid"></div></button>
+            <button class="mini-screen" type="button" data-jump="me"><strong>统计总览</strong><div class="mini-line short"></div><div class="mini-line"></div><div class="mini-line mid"></div></button>
+          </div>
+          <div class="panel-body" style="border-top:1px solid var(--line);">
+            <p class="body-copy">原型保持为一个完整产品，不拆散成多个孤立 HTML。手机内展示真实信息架构：想法、盯盘、总结都有列表和详情；新增页只负责创建想法。</p>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <span class="label">DESIGN PRINCIPLES</span>
+            <h2>这版原型的产品约束</h2>
+          </div>
+          <div class="panel-body principles">
+            <div class="principle">
+              <span class="material-symbols-outlined">psychology</span>
+              <strong>AI 是工作层</strong>
+              <p class="body-copy">不做独立聊天入口，而是贯穿想法、计划、盯盘、总结。</p>
+            </div>
+            <div class="principle">
+              <span class="material-symbols-outlined">travel_explore</span>
+              <strong>AI 先研究</strong>
+              <p class="body-copy">先整理相关信息、候选理由和反向风险，再把疑问交给用户确认。</p>
+            </div>
+            <div class="principle">
+              <span class="material-symbols-outlined">warning</span>
+              <strong>用户不用写作文</strong>
+              <p class="body-copy">用户只确认事实、风险偏好和计划边界，不需要从零组织投资理由。</p>
+            </div>
+            <div class="principle">
+              <span class="material-symbols-outlined">verified_user</span>
+              <strong>合规边界明确</strong>
+              <p class="body-copy">整理计划、解释风险、推动处理，不提供收益承诺。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="notice">
+          说明：这是产品原型 HTML，用于确认交互和语言，不接真实行情、新闻、财报或后端 AI 服务。后续落地到 Nuxt 时仍需按共享契约、Worker service 和 D1 边界实现。
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const screens = Array.from(document.querySelectorAll(".screen"));
+    const navItems = Array.from(document.querySelectorAll(".nav-item"));
+    const miniScreens = Array.from(document.querySelectorAll(".mini-screen"));
+    const toast = document.getElementById("toast");
+    const cases = {
+      catl: {
+        code: "300750",
+        name: "宁德时代",
+        ideaTitle: "宁德时代买入想法",
+        planTitle: "宁德时代买入计划",
+        userLine: "我想买宁德时代",
+        ideaStatus: "待确认",
+        ideaTone: "amber",
+        ideaSummary: "AI 已研究价格、财报摘要和历史计划，等待确认风险边界。",
+        research: "你可能是在考虑买入宁德时代，并用小仓位验证电池出货恢复逻辑。这个理解需要你确认，不会直接变成买入建议。",
+        reasons: "出货改善、估值回落",
+        risks: "价格破位、财报不及预期",
+        gap: "风险承受未确认",
+        data: ["你的历史计划：过去更适合小仓位验证，不适合一次重仓。", "已接入数据：近期价格回撤接近关键区间，财报摘要显示出货改善需要继续验证。", "未接入信息：实时盘口和完整新闻源，相关判断需要你人工确认。"],
+        choices: ["方向确认：买入宁德时代 300750，小仓位验证。", "认可理由：出货改善和估值回落，但不假设一定上涨。", "风险边界：最大仓位 10%，跌破成本 8% 且放量下跌就停止买入逻辑。"],
+        plan: ["买入宁德时代，小仓位验证新能源订单恢复逻辑。", "出货改善、估值回落、但仍需验证财报质量。", "出货改善没有持续、价格跌破关键区间，或财报验证失败。", "如果跌破成本 8% 且放量下跌，就停止买入逻辑。", "价格、成交量、下一次财报和订单数据。", "计划仓位 10%，适合先验证而非重仓下注。"],
+        isWatching: true,
+        watchTone: "red",
+        watchStatus: "必须处理",
+        watchSummary: "接近止损边界，优先级最高。",
+        progress: 74,
+        timeline: [["价格", "接近成本下方 8% 区间，需要确认是否放量。"], ["成交量", "今天量能尚未达到你写下的“放量下跌”条件。"], ["财报", "下一次财报是验证订单恢复逻辑的关键材料。"]],
+        summaryStatus: "",
+        summaryTone: "",
+        summaryFocus: "",
+        memory: "我在接近止损时想继续等，说明原计划对成交量条件写得还不够具体。",
+        original: "小仓位买入，跌破成本 8% 且放量下跌时停止买入逻辑。",
+        actual: "接近条件时犹豫，没有立即检查成交量。",
+        tags: [["止损拖延", "red"], ["条件不够具体", "amber"]]
+      },
+      tencent: {
+        code: "00700",
+        name: "腾讯",
+        ideaTitle: "腾讯减仓想法",
+        planTitle: "腾讯减仓计划",
+        userLine: "我准备减仓腾讯",
+        ideaStatus: "待确认",
+        ideaTone: "amber",
+        ideaSummary: "AI 已整理分批减仓方案，等待确认是否保留核心仓位。",
+        research: "你可能想降低组合波动，但 AI 发现理由里混有“纪律调整”和“害怕回撤”。需要先确认真实目标。",
+        reasons: "降低波动、释放现金",
+        risks: "过早减仓、理由漂移",
+        gap: "是否保留核心仓位未确认",
+        data: ["你的历史记录：情绪性减仓后，常出现重新追高买回。", "已接入数据：近期价格波动扩大，但基本面假设没有被单一事件推翻。", "未接入信息：完整港股实时盘口和公司最新公告，需要你人工确认。"],
+        choices: ["AI 推荐：只减掉让你睡不着的波动仓，保留核心仓位。", "保守选项：先不减仓，只降低观察阈值。", "风险较高：一次性减半，可能把纪律调整变成情绪出逃。"],
+        plan: ["分批减仓腾讯，先释放一部分现金压力。", "降低组合波动，同时避免完全丢失核心仓位。", "因为短期回撤过早减仓，后续又在更高价格买回。", "如果减仓理由只是害怕回撤，而非组合风险超限，就暂停执行。", "组合波动、现金占比、核心仓位比例。", "单次减仓不超过计划仓位的三分之一。"],
+        isWatching: false,
+        watchTone: "amber",
+        watchStatus: "新计划",
+        watchSummary: "刚从想法确认进入盯盘，需要先观察组合波动。",
+        progress: 18,
+        timeline: [["组合", "确认减仓后现金占比是否回到目标区间。"], ["价格", "短线反弹时避免因为后悔重新追高。"], ["理由", "每天检查减仓理由是否仍是风险控制，而不是情绪。"]],
+        summaryStatus: "",
+        summaryTone: "",
+        summaryFocus: "",
+        memory: "",
+        original: "",
+        actual: "",
+        tags: []
+      },
+      moutai: {
+        code: "600519",
+        name: "贵州茅台",
+        ideaTitle: "贵州茅台继续持有",
+        planTitle: "贵州茅台持有计划",
+        userLine: "我想继续拿着贵州茅台",
+        ideaStatus: "可生成计划",
+        ideaTone: "green",
+        ideaSummary: "AI 已完成财报和现金流检查，可以进入计划预览。",
+        research: "你是在验证继续持有的理由是否仍成立，而不是寻找新的买入理由。AI 建议重点看现金流和库存。",
+        reasons: "现金流稳定、分红预期",
+        risks: "库存压力、增长放缓",
+        gap: "重大公告源需人工确认",
+        data: ["你的历史计划：这笔持有的核心假设是现金流稳定，不是短线价格。", "已接入数据：财报摘要和库存变化已整理，现金流仍是主线。", "未接入信息：实时公告源，重大事件需要你人工确认。"],
+        choices: ["AI 推荐：继续持有，不新增仓位，财报后复核现金流。", "保守选项：如果库存压力扩大，降低持有理由权重。", "风险较高：因为短线波动加仓，会偏离原计划。"],
+        plan: ["继续持有贵州茅台，不新增仓位。", "现金流稳定和分红预期仍可作为持有理由。", "库存压力扩大、增长放缓，或财报证伪持有理由。", "连续两个季度现金流弱化且库存压力扩大，就重新评估。", "现金流、库存、财报和分红政策。", "不新增仓位，只保留既有风险暴露。"],
+        isWatching: true,
+        watchTone: "amber",
+        watchStatus: "建议看看",
+        watchSummary: "财报已更新，建议确认现金流。",
+        progress: 42,
+        timeline: [["财报", "收入和现金流仍需逐项核对。"], ["库存", "库存压力是本次复核的主要反向信号。"], ["仓位", "原计划要求不新增仓位。"]],
+        summaryStatus: "已完成",
+        summaryTone: "green",
+        summaryFocus: "已归因：按计划执行。",
+        memory: "我按计划等待财报，没有因为短期波动调整仓位。",
+        original: "继续持有，不新增仓位，财报后确认现金流。",
+        actual: "按计划等待财报，未因为短期波动调整仓位。",
+        tags: [["按计划执行", "green"], ["风险判断充分", ""]]
+      }
+    };
+    let currentCase = "catl";
+    let nextDraftId = 1;
+    const adjustmentReasons = [
+      {
+        label: "有新证据",
+        tone: "green",
+        verdict: "新证据驱动",
+        detail: "可以调整，但需要把新证据写进版本记录。",
+        mutate: (plan) => [
+          plan[0],
+          `${plan[1]} 新证据已经补充到计划依据。`,
+          plan[2],
+          `${plan[3]} 新证据失效时恢复原边界。`,
+          plan[4],
+          plan[5]
+        ]
+      },
+      {
+        label: "执行信息填错",
+        tone: "green",
+        verdict: "正常修正",
+        detail: "允许修正成本、仓位或复核时间，但保留旧记录。",
+        mutate: (plan) => [
+          `${plan[0]} 修正执行信息后继续盯盘。`,
+          plan[1],
+          plan[2],
+          plan[3],
+          `${plan[4]} 同时核对成本价、实际仓位和复核时间。`,
+          plan[5]
+        ]
+      },
+      {
+        label: "想降低风险",
+        tone: "green",
+        verdict: "降低风险",
+        detail: "这是最容易通过的调整，AI 只记录版本变化。",
+        mutate: (plan) => [
+          plan[0],
+          plan[1],
+          plan[2],
+          plan[3],
+          plan[4],
+          "仓位下调一档，风险暴露降低，优先保护原纪律边界。"
+        ]
+      },
+      {
+        label: "想提高仓位",
+        tone: "red",
+        verdict: "必须二次确认",
+        detail: "提高仓位会放大风险，需要用户再次确认新证据和最大亏损。",
+        mutate: (plan) => [
+          `${plan[0]} 但提高仓位前必须二次确认。`,
+          plan[1],
+          `${plan[2]} 仓位提高会放大这个错误的损失。`,
+          "如果没有新增证据，不允许因为短期波动提高仓位。",
+          plan[4],
+          "仓位上调需要二次确认，并记录最大可接受亏损。"
+        ]
+      },
+      {
+        label: "想延后失败条件",
+        tone: "red",
+        verdict: "可能绕开原计划",
+        detail: "这类调整最容易变成拖延止损，AI 会强提醒。",
+        mutate: (plan) => [
+          plan[0],
+          plan[1],
+          `${plan[2]} 延后失败条件可能是在回避已经出现的反向证据。`,
+          "失败条件不能单纯延后；必须有新证据，否则进入总结而不是改旧计划。",
+          plan[4],
+          plan[5]
+        ]
+      },
+      {
+        label: "交易逻辑变了",
+        tone: "red",
+        verdict: "建议新建计划",
+        detail: "如果核心理由变了，旧计划不应被改写，应结束并新建计划。",
+        mutate: (plan) => [
+          plan[0],
+          "核心逻辑已经变化，当前计划不应继续承载新理由。",
+          plan[2],
+          "结束旧计划并总结，再新建一条计划。",
+          plan[4],
+          plan[5]
+        ]
+      }
+    ];
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function badge(text, tone = "") {
+      return `<span class="badge ${tone}">${text}</span>`;
+    }
+
+    function selectedChoiceIndex(item) {
+      return Number.isInteger(item.selectedChoiceIndex) ? item.selectedChoiceIndex : 0;
+    }
+
+    function selectedChoice(item) {
+      return item.choices[selectedChoiceIndex(item)] || item.choices[0];
+    }
+
+    function selectedAdjustmentIndex(item) {
+      return Number.isInteger(item.selectedAdjustmentIndex) ? item.selectedAdjustmentIndex : 0;
+    }
+
+    function selectedAdjustment(item) {
+      return adjustmentReasons[selectedAdjustmentIndex(item)] || adjustmentReasons[0];
+    }
+
+    function decisionPlan(item) {
+      const plan = [...item.plan];
+      const choiceIndex = selectedChoiceIndex(item);
+
+      if (choiceIndex === 1) {
+        plan[0] = `先采用保守执行：${plan[0]}`;
+        plan[3] = "如果关键事实无法确认，就暂停执行，不把模糊判断推进到盯盘。";
+        plan[5] = "仓位和风险暴露按更低一档处理，后续用证据再恢复。";
+      }
+
+      if (choiceIndex === 2) {
+        plan[0] = `风险较高方案：${plan[0]}`;
+        plan[3] = "如果选择激进边界，必须二次确认事实和仓位，否则不进入正式盯盘。";
+        plan[5] = "AI 标记为高风险，需要减少仓位或补充人工确认。";
+      }
+
+      return plan;
+    }
+
+    function currentPlan(item) {
+      return item.currentPlan || decisionPlan(item);
+    }
+
+    function adjustedPlan(item) {
+      const plan = currentPlan(item);
+      return selectedAdjustment(item).mutate(plan);
+    }
+
+    function makeDraftCase(rawText) {
+      const cleanText = rawText.trim() || "我想记录一个新的交易想法";
+      const shortName = cleanText
+        .replace(/^我(想|准备|打算)?/, "")
+        .replace(/买入|买|减仓|卖出|继续持有|继续拿着/g, "")
+        .trim()
+        .slice(0, 8) || "新想法";
+      const safeLine = escapeHtml(cleanText);
+      const safeName = escapeHtml(shortName);
+
+      return {
+        code: "NEW",
+        name: safeName,
+        ideaTitle: `${safeName}交易想法`,
+        planTitle: `${safeName}纪律计划`,
+        userLine: safeLine,
+        ideaStatus: "待确认",
+        ideaTone: "amber",
+        ideaSummary: "AI 已创建研究草稿，等待你确认事实、风险边界和是否进入计划预览。",
+        research: `AI 先把“${safeLine}”整理成一个待确认的交易想法。当前只完成原型级研究，没有接入真实行情、新闻或财报。`,
+        reasons: "待确认事实、候选理由",
+        risks: "理由不清、仓位过重",
+        gap: "标的、方向、仓位待确认",
+        data: ["用户刚输入的一句话想法。", "已参考历史行为画像：模糊理由容易导致后续改计划。", "未接入真实行情、新闻、财报或后端 AI 服务。"],
+        choices: ["AI 推荐：先小仓位或观察，不把模糊想法直接变成计划。", "保守选项：只保存为草稿，等关键事实补齐后再预览。", "风险较高：直接进入计划预览，但需要二次确认仓位和失败条件。"],
+        plan: [`围绕“${safeLine}”生成一份待确认纪律计划。`, "先确认事实和理由是否成立，再决定是否进入盯盘。", "最大风险是把一句模糊想法当成已经完成的判断。", "如果事实、仓位或失败条件说不清，就暂停执行。", "标的、方向、仓位、失败条件和下一次复核时间。", "默认小风险暴露，除非用户明确确认更高风险。"],
+        isWatching: false,
+        watchTone: "amber",
+        watchStatus: "新计划",
+        watchSummary: "新想法刚生成，等待确认后才进入盯盘。",
+        progress: 8,
+        timeline: [["事实", "确认标的、方向和触发条件。"], ["仓位", "确认最大风险暴露。"], ["复核", "设定下一次检查时间。"]],
+        summaryStatus: "",
+        summaryTone: "",
+        summaryFocus: "",
+        memory: "",
+        original: "",
+        actual: "",
+        tags: []
+      };
+    }
+
+    function prepareSummary(key) {
+      const item = cases[key];
+      const plan = currentPlan(item);
+
+      item.isWatching = false;
+      item.progress = 100;
+      item.watchStatus = "已结束";
+      item.watchTone = "";
+      item.ideaStatus = "已结束";
+      item.ideaTone = "";
+      item.summaryStatus = "待完成";
+      item.summaryTone = "amber";
+      item.summaryFocus = "等待补充执行结果和行为归因。";
+      item.memory = item.memory || "这次要重点记录：我有没有按照原计划执行，而不是临时改变边界。";
+      item.original = item.original || plan[0];
+      item.actual = item.actual || "刚结束计划，等待补充实际执行过程。";
+      item.tags = item.tags.length ? item.tags : [["待归因", "amber"]];
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    function activateScreen(name) {
+      screens.forEach((screen) => {
+        screen.classList.toggle("active", screen.dataset.screen === name);
+      });
+
+      let navName = name.startsWith("idea") ? "ideas" : name;
+      if (name.startsWith("watch")) navName = "watch";
+      if (name.startsWith("summary")) navName = "summary";
+      if (name === "plan-adjust") navName = "watch";
+      navItems.forEach((item) => item.classList.toggle("active", item.dataset.nav === navName));
+      miniScreens.forEach((item) => item.classList.toggle("active", item.dataset.jump === name));
+    }
+
+    function renderToday() {
+      const entries = Object.entries(cases);
+      const watchItems = entries.filter(([, item]) => item.isWatching);
+      const pendingIdeas = entries.filter(([, item]) => item.ideaStatus === "待确认");
+      const pendingSummaries = entries.filter(([, item]) => item.summaryStatus === "待完成");
+      const topWatch = watchItems
+        .sort((a, b) => (b[1].watchTone === "red") - (a[1].watchTone === "red"))
+        .slice(0, 2);
+      const totalActions = topWatch.length + pendingIdeas.length + pendingSummaries.length;
+
+      document.querySelector('[data-screen="today"]').innerHTML = `
+        <h2 class="screen-title">今天要处理</h2>
+        <p class="screen-subtitle">AI 按状态自动整理：先处理触发计划，再确认想法，最后补总结。</p>
+        <article class="card ai-brief">
+          <div class="row">
+            <span class="badge green"><span class="material-symbols-outlined">auto_awesome</span>AI 已排序</span>
+            <span class="label">${watchItems.length} 个盯盘 / ${pendingIdeas.length} 个想法</span>
+          </div>
+          <h3 class="action-title">${totalActions ? `还有 ${totalActions} 件事建议处理` : "今天没有必须处理的事项"}</h3>
+          <p class="body-copy">${totalActions ? "原型会随着你开始盯盘、结束计划和补充总结自动更新待办。" : "可以新增一个交易想法，或复盘历史计划。"}</p>
+        </article>
+        ${topWatch.map(([key, item]) => `
+          <article class="card">
+            <div class="row">${badge(item.watchStatus, item.watchTone)}<span class="label">${item.code}</span></div>
+            <h3 class="action-title">${item.planTitle}</h3>
+            <p class="body-copy">${item.watchSummary}</p>
+            <div class="button-row">
+              <button class="btn secondary" type="button" data-watch="${key}">继续盯</button>
+              <button class="btn warning" type="button" data-summary="${key}">结束并总结</button>
+            </div>
+          </article>
+        `).join("")}
+        ${pendingIdeas.slice(0, 2).map(([key, item]) => `
+          <article class="card">
+            <div class="row">${badge(item.ideaStatus, item.ideaTone)}<span class="label">${item.code}</span></div>
+            <h3 class="action-title">${item.ideaTitle}</h3>
+            <p class="body-copy">${item.ideaSummary}</p>
+            <button class="btn" type="button" data-case="${key}" style="width:100%;margin-top:12px;">确认信息</button>
+          </article>
+        `).join("")}
+        ${pendingSummaries.slice(0, 1).map(([key, item]) => `
+          <article class="card">
+            <div class="row">${badge(item.summaryStatus, item.summaryTone)}<span class="label">${item.code}</span></div>
+            <h3 class="action-title">${item.planTitle}等待总结</h3>
+            <p class="body-copy">${item.summaryFocus}</p>
+            <button class="btn secondary" type="button" data-summary="${key}" style="width:100%;margin-top:12px;">补充总结</button>
+          </article>
+        `).join("")}
+      `;
+    }
+
+    function renderIdeas() {
+      const waiting = Object.values(cases).filter((item) => item.ideaStatus === "待确认").length;
+      document.querySelector('[data-screen="ideas"]').innerHTML = `
+        <h2 class="screen-title">想法列表</h2>
+        <p class="screen-subtitle">所有交易想法先进入列表。每条想法都有独立状态、AI 研究进度和下一步动作。</p>
+        <div class="metric-grid">
+          <div class="metric"><span class="label">全部想法</span><strong>${Object.keys(cases).length}</strong></div>
+          <div class="metric"><span class="label">等待确认</span><strong>${waiting}</strong></div>
+        </div>
+        <article class="card">
+          <div class="row">
+            <span class="label">想法队列</span>
+            <button class="btn secondary" type="button" data-jump="idea-new" style="min-height:34px;padding:0 10px;">新增</button>
+          </div>
+          <div class="case-list">
+            ${Object.entries(cases).map(([key, item]) => `
+              <button class="case-card ${key === currentCase ? "active" : ""}" type="button" data-case="${key}">
+                <div class="case-meta">${badge(item.ideaStatus, item.ideaTone)}<span class="label">${item.code}</span></div>
+                <h4>${item.ideaTitle}</h4>
+                <p class="body-copy">${item.ideaSummary}</p>
+              </button>
+            `).join("")}
+          </div>
+        </article>
+        <article class="card">
+          <div class="row"><span class="label">列表页只做分流</span><span class="badge">IA</span></div>
+          <p class="body-copy" style="margin-top:8px;">点击任意想法进入详情页；点击新增进入新增页。列表不承载完整研究内容，避免所有交互挤在一个页面。</p>
+        </article>
+      `;
+    }
+
+    function renderIdeaDetail() {
+      const item = cases[currentCase];
+      document.querySelector('[data-screen="idea-detail"]').innerHTML = `
+        <div class="row" style="margin-bottom:12px;">
+          <button class="icon-button" type="button" data-jump="ideas" aria-label="返回想法列表"><span class="material-symbols-outlined">arrow_back</span></button>
+          ${badge(item.ideaStatus, item.ideaTone)}
+        </div>
+        <h2 class="screen-title">${item.ideaTitle}</h2>
+        <p class="screen-subtitle">AI 先深度研究，再把疑问整理成可确认选项。你不需要重新组织长篇理由。</p>
+        <div class="chat">
+          <div class="bubble user">${item.userLine}</div>
+          <div class="bubble ai">我先按“${item.planTitle} ${item.code}”的方向研究。已接入：历史计划、近期价格、相关摘要；未接入的实时信息会明确标出。</div>
+          <div class="bubble ai">研究结论不会直接变成买卖建议。我会先给出候选判断和反向风险，再让你确认边界。</div>
+        </div>
+        <article class="card ai-brief">
+          <div class="row">${badge("AI 深度研究", "green")}<span class="label">${item.ideaStatus}</span></div>
+          <h3 class="action-title">AI 初步理解</h3>
+          <p class="body-copy">${item.research}</p>
+          <div class="research-grid">
+            <div class="research-tile"><span class="label">可能理由</span><strong>${item.reasons}</strong></div>
+            <div class="research-tile"><span class="label">反向风险</span><strong>${item.risks}</strong></div>
+            <div class="research-tile"><span class="label">缺口</span><strong>${item.gap}</strong></div>
+            <div class="research-tile"><span class="label">状态</span><strong>${item.isWatching ? "已有盯盘计划" : "等待确认"}</strong></div>
+          </div>
+        </article>
+        <article class="card">
+          <span class="label">研究过程状态</span>
+          <div class="timeline">
+            <div class="timeline-row"><time>已完成</time><span>整理用户想法、历史计划和可用摘要。</span></div>
+            <div class="timeline-row"><time>待确认</time><span>${item.gap}</span></div>
+            <div class="timeline-row"><time>边界</time><span>未接入真实行情、新闻或财报服务，不能输出买卖建议。</span></div>
+          </div>
+        </article>
+        <article class="card">
+          <span class="label">AI 使用的信息</span>
+          <div class="source-list">
+            ${item.data.map((text, index) => `
+              <div class="source-item">
+                <span class="source-icon"><span class="material-symbols-outlined">${["history", "query_stats", "help"][index]}</span></span>
+                <span>${text}</span>
+              </div>
+            `).join("")}
+          </div>
+        </article>
+        <article class="card">
+          <div class="row"><span class="label">需要你确认</span><span class="badge amber">AI 已整理候选项</span></div>
+          <p class="body-copy" style="margin:8px 0 10px;">选择更接近你的真实意图的选项。原型里默认采用 AI 推荐边界。</p>
+          <div class="choice-list">
+            ${item.choices.map((text, index) => `
+              <button class="choice-item ${index === selectedChoiceIndex(item) ? "selected" : ""} ${index === 2 ? "warning" : ""}" type="button" data-action="select-choice">
+                <span class="choice-icon"><span class="material-symbols-outlined">${index === 2 ? "priority_high" : "check"}</span></span>
+                <span>${text}</span>
+              </button>
+            `).join("")}
+          </div>
+          <div class="button-row">
+            <button class="btn secondary" type="button" data-action="save-draft">保存为草稿</button>
+            <button class="btn" type="button" data-action="confirm-preview">确认并预览</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderPreview() {
+      const item = cases[currentCase];
+      const plan = currentPlan(item);
+      document.querySelector('[data-screen="preview"]').innerHTML = `
+        <div class="row" style="margin-bottom:12px;">
+          <button class="icon-button" type="button" data-jump="idea-detail" aria-label="返回想法详情"><span class="material-symbols-outlined">arrow_back</span></button>
+          ${badge("确认前预览", "green")}
+        </div>
+        <h2 class="screen-title">计划预览</h2>
+        <p class="screen-subtitle">当前预览属于 ${item.name}。确认前不会进入正式盯盘。</p>
+        <article class="card ai-brief">
+          <div class="row">
+            <div><span class="label">交易计划</span><h3 class="action-title" style="margin-top:4px;">${item.planTitle}</h3></div>
+            ${badge("可开始盯盘", "green")}
+          </div>
+          <div class="chart-bars" aria-label="计划风险可视化">
+            <span style="height:32%"></span><span style="height:42%"></span><span style="height:46%"></span><span style="height:58%"></span>
+            <span style="height:72%"></span><span style="height:65%"></span><span style="height:55%"></span><span style="height:48%"></span>
+            <span style="height:39%"></span><span style="height:44%"></span><span style="height:52%"></span><span style="height:60%"></span>
+          </div>
+        </article>
+        <article class="card stack">
+          <div><span class="label">本次采用的确认项</span><p class="body-copy">${selectedChoice(item)}</p></div>
+          <div><span class="label">AI 研究摘要</span><p class="body-copy">${item.research}</p></div>
+          <div><span class="label">我打算怎么做</span><p class="body-copy">${plan[0]}</p></div>
+          <div><span class="label">我认可的理由</span><p class="body-copy">${plan[1]}</p></div>
+          <div><span class="label">我可能错在哪里</span><p class="body-copy">${plan[2]}</p></div>
+          <div><span class="label">什么情况要停下来</span><p class="body-copy">${plan[3]}</p></div>
+          <div><span class="label">接下来盯什么</span><p class="body-copy">${plan[4]}</p></div>
+          <div><span class="label">仓位是否合适</span><p class="body-copy">${plan[5]}</p></div>
+          <div><span class="label">最终确认</span><p class="body-copy">这是你的交易计划，不是 AI 的买卖建议。开始盯盘只代表你确认这个计划值得持续检查。</p></div>
+        </article>
+        <div class="button-row">
+          <button class="btn secondary" type="button" data-jump="idea-detail">继续修改</button>
+          <button class="btn" type="button" data-action="start-watch">开始盯盘</button>
+        </div>
+      `;
+    }
+
+    function renderWatch() {
+      const activePlans = Object.entries(cases).filter(([, item]) => item.isWatching);
+      document.querySelector('[data-screen="watch"]').innerHTML = `
+        <h2 class="screen-title">盯盘列表</h2>
+        <p class="screen-subtitle">这里只展示已经确认并进入盯盘的计划；待确认想法仍留在想法列表。</p>
+        <article class="card">
+          <div class="row"><span class="label">盯盘中的计划</span><span class="badge">${activePlans.length} 个</span></div>
+          <div class="compact-list">
+            ${activePlans.map(([key, item]) => `
+              <button class="compact-row ${key === currentCase ? "active" : ""}" type="button" data-watch="${key}">
+                <div><strong>${item.planTitle}</strong><p class="body-copy">${item.watchSummary}</p></div>
+                ${badge(item.watchStatus, item.watchTone)}
+              </button>
+            `).join("")}
+          </div>
+        </article>
+      `;
+    }
+
+    function renderWatchDetail() {
+      const fallbackKey = Object.keys(cases).find((key) => cases[key].isWatching) || currentCase;
+      const detailKey = cases[currentCase].isWatching ? currentCase : fallbackKey;
+      const item = cases[detailKey];
+      const plan = currentPlan(item);
+      document.querySelector('[data-screen="watch-detail"]').innerHTML = `
+        <div class="row" style="margin-bottom:12px;">
+          <button class="icon-button" type="button" data-jump="watch" aria-label="返回盯盘列表"><span class="material-symbols-outlined">arrow_back</span></button>
+          ${badge(item.watchStatus, item.watchTone)}
+        </div>
+        <h2 class="screen-title">盯盘详情</h2>
+        <p class="screen-subtitle">详情页展示单个计划的检查进度、触发条件、AI 解释和可执行动作。</p>
+        <article class="card">
+          <div class="row">
+            <div><span class="label">${item.code} · ${item.planVersion || "v1"}</span><h3 class="action-title" style="margin-top:4px;">${item.planTitle}</h3></div>
+            ${badge(item.watchStatus, item.watchTone)}
+          </div>
+          <p class="body-copy">原计划：${plan[3]} AI 正在检查${plan[4]}。</p>
+          <div style="margin-top:12px;">
+            <div class="row"><span class="label">盯盘进度</span><strong>${item.progress}%</strong></div>
+            <div class="progress" style="margin-top:7px;"><span style="width:${item.progress}%"></span></div>
+          </div>
+        </article>
+        <section class="card">
+          <span class="label">AI 正在盯什么</span>
+          <div class="timeline">
+            ${item.timeline.map(([time, text]) => `<div class="timeline-row"><time>${time}</time><span>${text}</span></div>`).join("")}
+          </div>
+        </section>
+        <article class="card">
+          <span class="label">调整计划时 AI 会检查</span>
+          <p class="body-copy" style="margin-top:8px;">如果你把边界越改越宽，或者在没有新证据时提高风险暴露，AI 会提醒这可能是在绕开原计划。</p>
+          <div class="button-row">
+            <button class="btn secondary" type="button" data-action="adjust-plan">调整计划</button>
+            <button class="btn warning" type="button" data-action="finish-summary">结束并总结</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderPlanAdjust() {
+      const fallbackKey = Object.keys(cases).find((key) => cases[key].isWatching) || currentCase;
+      const detailKey = cases[currentCase].isWatching ? currentCase : fallbackKey;
+      const item = cases[detailKey];
+      const before = currentPlan(item);
+      const after = adjustedPlan(item);
+      const review = selectedAdjustment(item);
+      const history = item.adjustmentHistory || [];
+      const nextVersion = `v${Number(item.planVersion?.replace("v", "") || 1) + 1}`;
+
+      document.querySelector('[data-screen="plan-adjust"]').innerHTML = `
+        <div class="row" style="margin-bottom:12px;">
+          <button class="icon-button" type="button" data-jump="watch-detail" aria-label="返回盯盘详情"><span class="material-symbols-outlined">arrow_back</span></button>
+          ${badge(item.planVersion || "v1")}
+        </div>
+        <h2 class="screen-title">调整计划</h2>
+        <p class="screen-subtitle">AI 先问清楚为什么要改，再生成新版本。旧计划不会被覆盖。</p>
+
+        <div class="chat">
+          <div class="bubble user">我想调整 ${item.planTitle}</div>
+          <div class="bubble ai">我先对照 ${item.planVersion || "v1"}。调整计划不是直接改旧规则，而是判断这次变化是否合理，并保存成新版本。</div>
+          <div class="bubble ai">第一个问题：你这次想调整的主要原因是什么？不用写长理由，选最接近的一项。</div>
+        </div>
+
+        <article class="card ai-brief">
+          <div class="row"><span class="label">AI 追问</span><span class="badge">第 1 步</span></div>
+          <div class="choice-list">
+            ${adjustmentReasons.map((reason, index) => `
+              <button class="choice-item ${index === selectedAdjustmentIndex(item) ? "selected" : ""} ${reason.tone === "red" ? "warning" : ""}" type="button" data-action="select-adjustment" data-adjustment-index="${index}">
+                <span class="choice-icon"><span class="material-symbols-outlined">${reason.tone === "red" ? "priority_high" : "check"}</span></span>
+                <span><strong>${reason.label}</strong><br>${reason.verdict}</span>
+              </button>
+            `).join("")}
+          </div>
+        </article>
+
+        <div class="chat">
+          <div class="bubble user">${review.label}</div>
+          <div class="bubble ${review.tone === "red" ? "warn" : "ai"}">AI 判断：${review.verdict}。${review.detail}</div>
+          <div class="bubble ai">第二个问题：如果确认继续调整，我会生成 ${nextVersion}，并保留 ${item.planVersion || "v1"} 作为历史版本。下面是我整理的变更草案。</div>
+        </div>
+
+        <article class="card stack">
+          <div class="row"><span class="label">AI 生成的 ${nextVersion} 草案</span>${badge(review.verdict, review.tone)}</div>
+          <div><span class="label">原计划怎么做</span><p class="body-copy">${before[0]}</p></div>
+          <div><span class="label">调整后怎么做</span><p class="body-copy">${after[0]}</p></div>
+          <div><span class="label">原失败条件</span><p class="body-copy">${before[3]}</p></div>
+          <div><span class="label">调整后失败条件</span><p class="body-copy">${after[3]}</p></div>
+          <div><span class="label">仓位变化</span><p class="body-copy">${after[5]}</p></div>
+        </article>
+
+        <article class="card">
+          <span class="label">历史版本</span>
+          <div class="timeline">
+            ${history.length ? history.map((record) => `
+              <div class="timeline-row"><time>${record.version}</time><span>${record.reason} · ${record.verdict}</span></div>
+            `).join("") : `<div class="timeline-row"><time>v1</time><span>原始计划，尚未调整。</span></div>`}
+          </div>
+          <div class="button-row">
+            <button class="btn secondary" type="button" data-action="adjust-more">继续问 AI</button>
+            <button class="btn ${review.tone === "red" ? "warning" : ""}" type="button" data-action="save-adjustment">确认生成 ${nextVersion}</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderSummary() {
+      const summaries = Object.entries(cases).filter(([, item]) => item.summaryStatus);
+      document.querySelector('[data-screen="summary"]').innerHTML = `
+        <h2 class="screen-title">总结列表</h2>
+        <p class="screen-subtitle">这里只展示待总结和已完成总结。未进入盯盘的想法不会混入总结队列。</p>
+        <article class="card">
+          <div class="row"><span class="label">总结队列</span><span class="badge">${summaries.length} 笔</span></div>
+          <div class="case-list">
+            ${summaries.map(([key, item]) => `
+              <button class="case-card ${key === currentCase ? "active" : ""}" type="button" data-summary="${key}">
+                <div class="case-meta">${badge(item.summaryStatus, item.summaryTone)}<span class="label">${item.code}</span></div>
+                <h4>${item.planTitle}</h4>
+                <p class="body-copy">${item.summaryFocus}</p>
+              </button>
+            `).join("")}
+          </div>
+        </article>
+      `;
+    }
+
+    function renderSummaryDetail() {
+      const fallbackKey = Object.keys(cases).find((key) => cases[key].summaryStatus) || currentCase;
+      const detailKey = cases[currentCase].summaryStatus ? currentCase : fallbackKey;
+      const item = cases[detailKey];
+      document.querySelector('[data-screen="summary-detail"]').innerHTML = `
+        <div class="row" style="margin-bottom:12px;">
+          <button class="icon-button" type="button" data-jump="summary" aria-label="返回总结列表"><span class="material-symbols-outlined">arrow_back</span></button>
+          ${badge(item.summaryStatus, item.summaryTone)}
+        </div>
+        <h2 class="screen-title">${item.planTitle}</h2>
+        <p class="screen-subtitle">详情页对照原计划和实际行为，沉淀这笔交易最该记住的问题。</p>
+        <article class="card">
+          <div class="row">${badge(item.summaryStatus, item.summaryTone)}<span class="label">${item.code}</span></div>
+          <h3 class="action-title">这次最该记住什么？</h3>
+          <textarea class="text-input" data-summary-note>${escapeHtml(item.memory)}</textarea>
+          <div class="button-row">
+            <button class="btn secondary" type="button" data-toast="已保留在待总结队列。">稍后补充</button>
+            <button class="btn" type="button" data-action="save-summary">保存总结</button>
+          </div>
+        </article>
+        <article class="card stack">
+          <div><span class="label">原来打算</span><p class="body-copy">${item.original}</p></div>
+          <div><span class="label">实际执行</span><p class="body-copy">${item.actual}</p></div>
+          <div><span class="label">AI 归因标签</span><p>${item.tags.map(([text, tone]) => badge(text, tone)).join(" ")}</p></div>
+        </article>
+      `;
+    }
+
+    function renderMe() {
+      const entries = Object.entries(cases);
+      const allItems = Object.values(cases);
+      const total = allItems.length;
+      const watching = entries.filter(([, item]) => item.isWatching);
+      const pendingIdeas = entries.filter(([, item]) => item.ideaStatus === "待确认");
+      const completed = entries.filter(([, item]) => item.summaryStatus === "已完成");
+      const summaries = entries.filter(([, item]) => item.summaryStatus);
+      const planned = entries.filter(([, item]) => (
+        item.isWatching ||
+        item.summaryStatus ||
+        item.ideaStatus === "已进入盯盘" ||
+        item.ideaStatus === "已生成计划" ||
+        item.ideaStatus === "已结束"
+      ));
+      const confirmedIdeas = total - pendingIdeas.length;
+      const adjustmentRecords = entries.flatMap(([key, item]) => (
+        (item.adjustmentHistory || []).map((record) => ({ key, item, record }))
+      ));
+      const riskyAdjustments = adjustmentRecords.filter(({ record }) => (
+        record.verdict === "可能绕开原计划" ||
+        record.verdict === "必须二次确认" ||
+        record.verdict === "建议新建计划"
+      ));
+      const tagCounts = {};
+      allItems.forEach((item) => {
+        item.tags.forEach(([text]) => {
+          tagCounts[text] = (tagCounts[text] || 0) + 1;
+        });
+      });
+      const percent = (count, base) => base ? Math.round((count / base) * 100) : 0;
+      const confirmRate = percent(confirmedIdeas, total);
+      const planRate = percent(planned.length, total);
+      const summaryRate = percent(completed.length, summaries.length || planned.length);
+      const riskRate = percent(riskyAdjustments.length, adjustmentRecords.length);
+      const disciplineScore = Math.round((confirmRate * 0.25) + (planRate * 0.2) + (summaryRate * 0.35) + ((100 - riskRate) * 0.2));
+      const funnelRows = [
+        ["想法记录", total, 100],
+        ["完成确认", confirmedIdeas, confirmRate],
+        ["进入计划", planned.length, planRate],
+        ["正在盯盘", watching.length, percent(watching.length, planned.length)],
+        ["完成总结", completed.length, summaryRate]
+      ];
+      const tagRows = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 4);
+      const adjustmentRows = [
+        ["全部调整", adjustmentRecords.length, adjustmentRecords.length ? 100 : 0],
+        ["风险调整", riskyAdjustments.length, riskRate],
+        ["正常/降低风险", adjustmentRecords.length - riskyAdjustments.length, percent(adjustmentRecords.length - riskyAdjustments.length, adjustmentRecords.length)]
+      ];
+      const statusRows = [
+        ["待确认", pendingIdeas.length, percent(pendingIdeas.length, total)],
+        ["盯盘中", watching.length, percent(watching.length, total)],
+        ["有总结", summaries.length, percent(summaries.length, total)],
+        ["已完成总结", completed.length, percent(completed.length, total)]
+      ];
+
+      document.querySelector('[data-screen="me"]').innerHTML = `
+        <h2 class="screen-title">统计总览</h2>
+        <p class="screen-subtitle">从整体层面看交易纪律执行情况，不展示单条待办，也不作为保存总结后的跳转落点。</p>
+
+        <article class="card ai-brief">
+          <div class="row">
+            <span class="badge green"><span class="material-symbols-outlined">analytics</span>纪律统计</span>
+            <span class="label">${total} 条记录</span>
+          </div>
+          <h3 class="action-title">纪律执行分 ${disciplineScore}</h3>
+          <p class="body-copy">这个分数只衡量记录、确认、盯盘、总结和调整风险，不评价收益，也不提供买卖建议。</p>
+        </article>
+
+        <div class="metric-grid">
+          <div class="metric"><span class="label">确认率</span><strong>${confirmRate}%</strong></div>
+          <div class="metric"><span class="label">计划转化率</span><strong>${planRate}%</strong></div>
+          <div class="metric"><span class="label">总结完成率</span><strong>${summaryRate}%</strong></div>
+          <div class="metric"><span class="label">风险调整率</span><strong>${riskRate}%</strong></div>
+        </div>
+
+        <article class="card">
+          <div class="row"><span class="label">纪律漏斗</span><span class="badge">整体转化</span></div>
+          <div class="stack" style="margin-top:10px;">
+            ${funnelRows.map(([label, count, value]) => `
+              <div>
+                <div class="row"><span class="label">${label}</span><strong>${count}</strong></div>
+                <div class="progress" style="margin-top:7px;"><span style="width:${value}%"></span></div>
+              </div>
+            `).join("")}
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="row"><span class="label">状态分布</span><span class="badge">占全部记录</span></div>
+          <div class="timeline">
+            ${statusRows.map(([label, count, value]) => `<div class="timeline-row"><time>${value}%</time><span>${label} · ${count} 条</span></div>`).join("")}
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="row"><span class="label">调整风险</span><span class="badge">${adjustmentRecords.length} 次调整</span></div>
+          <div class="timeline">
+            ${adjustmentRows.map(([label, count, value]) => `<div class="timeline-row"><time>${value}%</time><span>${label} · ${count} 次</span></div>`).join("")}
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="row"><span class="label">行为标签分布</span><span class="badge">${tagRows.length || 0} 类</span></div>
+          <div class="timeline">
+            ${tagRows.length ? tagRows.map(([label, count]) => `<div class="timeline-row"><time>${count}</time><span>${label}</span></div>`).join("") : `<div class="timeline-row"><time>0</time><span>还没有足够总结样本形成标签。</span></div>`}
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="label">统计口径</span>
+          <p class="body-copy" style="margin-top:8px;">统计页只看流程质量：想法是否确认、计划是否被盯盘、总结是否完成、调整是否绕开原计划。收益、行情和个股判断不进入这里。</p>
+        </article>
+      `;
+    }
+
+    function renderCurrentScreen(name) {
+      renderToday();
+      renderIdeas();
+      renderIdeaDetail();
+      renderPreview();
+      renderWatch();
+      renderWatchDetail();
+      renderPlanAdjust();
+      renderSummary();
+      renderSummaryDetail();
+      renderMe();
+      activateScreen(name);
+    }
+
+    document.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button) return;
+
+      if (button.dataset.toast) {
+        showToast(button.dataset.toast);
+        return;
+      }
+
+      if (button.dataset.nav) {
+        renderCurrentScreen(button.dataset.nav);
+        return;
+      }
+
+      if (button.dataset.case) {
+        currentCase = button.dataset.case;
+        renderCurrentScreen("idea-detail");
+        return;
+      }
+
+      if (button.dataset.watch) {
+        currentCase = button.dataset.watch;
+        renderCurrentScreen("watch-detail");
+        return;
+      }
+
+      if (button.dataset.summary) {
+        currentCase = button.dataset.summary;
+        if (!cases[currentCase].summaryStatus) prepareSummary(currentCase);
+        renderCurrentScreen("summary-detail");
+        return;
+      }
+
+      if (button.dataset.action === "select-choice") {
+        const options = Array.from(button.parentElement.querySelectorAll(".choice-item"));
+        const index = options.indexOf(button);
+        cases[currentCase].selectedChoiceIndex = index;
+        options.forEach((item) => item.classList.remove("selected"));
+        button.classList.add("selected");
+        showToast("已采用这条确认项，计划预览会按它改写边界。");
+        return;
+      }
+
+      if (button.dataset.action === "save-draft") {
+        showToast("已保存为想法草稿，仍留在想法列表。");
+        renderCurrentScreen("ideas");
+        return;
+      }
+
+      if (button.dataset.action === "confirm-preview") {
+        cases[currentCase].ideaStatus = "可生成计划";
+        cases[currentCase].ideaTone = "green";
+        showToast("确认完成，AI 已生成计划预览。");
+        renderCurrentScreen("preview");
+        return;
+      }
+
+      if (button.dataset.action === "start-watch") {
+        cases[currentCase].isWatching = true;
+        cases[currentCase].ideaStatus = "已进入盯盘";
+        cases[currentCase].ideaTone = "green";
+        cases[currentCase].watchStatus = selectedChoiceIndex(cases[currentCase]) === 2 ? "二次确认" : "新计划";
+        cases[currentCase].watchTone = selectedChoiceIndex(cases[currentCase]) === 2 ? "red" : "amber";
+        cases[currentCase].watchSummary = `采用确认项：${selectedChoice(cases[currentCase])}`;
+        showToast("已开始盯盘。这不是下单，只是持续检查你的计划。");
+        renderCurrentScreen("watch-detail");
+        return;
+      }
+
+      if (button.dataset.action === "adjust-plan") {
+        showToast("AI 会先判断这次调整是否偏离原计划。");
+        renderCurrentScreen("plan-adjust");
+        return;
+      }
+
+      if (button.dataset.action === "select-adjustment") {
+        cases[currentCase].selectedAdjustmentIndex = Number(button.dataset.adjustmentIndex || 0);
+        renderCurrentScreen("plan-adjust");
+        showToast("AI 已根据你的回答更新判断和 v2 草案。");
+        return;
+      }
+
+      if (button.dataset.action === "adjust-more") {
+        showToast("AI 会继续追问新证据、仓位和失败条件。原型中先展示核心问答。");
+        return;
+      }
+
+      if (button.dataset.action === "save-adjustment") {
+        const item = cases[currentCase];
+        const review = selectedAdjustment(item);
+        const before = currentPlan(item);
+        const after = adjustedPlan(item);
+        const nextVersion = Number(item.planVersion?.replace("v", "") || 1) + 1;
+        item.currentPlan = after;
+        item.planVersion = `v${nextVersion}`;
+        item.adjustmentHistory = [
+          {
+            version: item.planVersion,
+            reason: review.label,
+            verdict: review.verdict,
+            before: before[3],
+            after: after[3]
+          },
+          ...(item.adjustmentHistory || [])
+        ];
+        item.watchStatus = review.tone === "red" ? review.verdict : "已调整";
+        item.watchTone = review.tone;
+        item.watchSummary = `${item.planVersion} · ${review.verdict}：${review.detail}`;
+        showToast(`${item.planVersion} 已保存，原计划保留在历史版本。`);
+        renderCurrentScreen("watch-detail");
+        return;
+      }
+
+      if (button.dataset.action === "finish-summary") {
+        prepareSummary(currentCase);
+        renderCurrentScreen("summary-detail");
+        return;
+      }
+
+      if (button.dataset.action === "save-summary") {
+        const note = document.querySelector('[data-screen="summary-detail"] textarea[data-summary-note]')?.value.trim();
+        if (note) cases[currentCase].memory = note;
+        cases[currentCase].summaryStatus = "已完成";
+        cases[currentCase].summaryTone = "green";
+        cases[currentCase].summaryFocus = "已完成总结，可在总结列表继续查看。";
+        cases[currentCase].tags = cases[currentCase].tags.length ? cases[currentCase].tags : [["按计划复盘", "green"]];
+        showToast("总结已保存，已回到总结列表。");
+        renderCurrentScreen("summary");
+        return;
+      }
+
+      if (button.id === "startInterview") {
+        const draft = makeDraftCase(document.getElementById("ideaText")?.value || "");
+        const draftKey = `draft${nextDraftId++}`;
+        cases[draftKey] = draft;
+        currentCase = draftKey;
+        showToast("AI 已完成第一轮研究，请确认关键边界。");
+        renderCurrentScreen("idea-detail");
+        return;
+      }
+
+      if (button.dataset.jump) {
+        if (button.dataset.jump === "plan-adjust" && !cases[currentCase].isWatching) {
+          currentCase = Object.keys(cases).find((key) => cases[key].isWatching) || currentCase;
+        }
+        renderCurrentScreen(button.dataset.jump);
+      }
+    });
+
+    renderCurrentScreen("today");
+  </script>
+</body>
+</html>
